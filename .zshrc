@@ -12,8 +12,24 @@ fi
 
 # Customize to your needs...
 
-# added by Anaconda2 5.2.0 installer↲
-# export PATH="/Users/shuntaro/anaconda2/bin:$PATH"↲
+# 自動修正
+setopt correct
+setopt correct_all
+# cd省略
+setopt auto_cd
+
+alias ls='ls -aG'
+# cd + ls
+function chpwd() { ls }
+# mkdir + cd
+function mkcd() {
+  if [[ -d $1 ]]; then
+    echo "It already exists! cd to the directory."
+    cd $1
+  else
+    mkdir -p $1 && cd $1
+  fi
+}
 
 # pyenv
 export PATH="$HOME/.pyenv/bin:$PATH"
@@ -21,14 +37,6 @@ export PATH="/usr/local/bin:$PATH"
 eval "$(pyenv init -)"
 export LDFLAGS="-L/usr/local/opt/zlib/lib -L/usr/local/opt/bzip2/lib"
 export CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/bzip2/include"
-
-# cdls
-alias ls='ls -aG'
-cdls ()
-{
-    \cd "$@" && ls
-}
-alias cd='cdls'
 
 # PostgresSQL
 export PGDATA=/usr/local/var/postgres
