@@ -64,7 +64,7 @@ alias ge="git config user.email"
 alias ls-com="ls -l /dev/tty.*"
 
 # poetry
-export PATH="$HOME/.poetry/bin:$PATH"i
+export PATH="$HOME/.poetry/bin:$PATH"
 
 # rbenv
 [[ -d ~/.rbenv  ]] && \
