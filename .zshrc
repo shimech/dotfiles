@@ -38,8 +38,8 @@ eval "$(pyenv init -)"
 export PGDATA=/usr/local/var/postgres
 
 # Java8
-export JAVA_HOME=`/usr/libexec/java_home -v "1.8"`
-PATH=${JAVA_HOME}/bin:${PATH}
+export JAVA_HOME=`/usr/libexec/java_home -v "14"`
+PATH="$JAVA_HOME/bin:$PATH"
 
 # Alias for Homebrew Update
 alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.sh"
