@@ -1,6 +1,6 @@
 #!/bin/sh
 
-WORKDIR=~/Documents/dotfiles
+WORKDIR=~/work/dotfiles
 
 # zsh
 ln -sf $WORKDIR/.zshrc ~/.zshrc

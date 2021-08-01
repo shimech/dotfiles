@@ -1,0 +1,1 @@
+/home/shuntaro/work/dotfiles/.vim

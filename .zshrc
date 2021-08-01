@@ -31,47 +31,7 @@ function mkcd() {
   fi
 }
 
-# pyenv
-eval "$(pyenv init -)"
-
-# PostgresSQL
-export PGDATA=/usr/local/var/postgres
-
-# Java8
-export JAVA_HOME=`/usr/libexec/java_home -v "14"`
-PATH="$JAVA_HOME/bin:$PATH"
-
-# Alias for Homebrew Update
-alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.sh"
-
-# Node.js
-export PATH="$HOME/.nodebrew/current/bin:$PATH"
-
-# composer
-export PATH="/usr/local/bin:$PATH"
-export PATH="$HOME/.composer/vendor/bin:$PATH"
-
 # Git
 alias g="git status; git branch"
 alias gn="git config user.name"
 alias ge="git config user.email"
-
-# COM
-alias ls-com="ls -l /dev/tty.*"
-
-# poetry
-export PATH="$HOME/.poetry/bin:$PATH"
-
-# rbenv
-[[ -d ~/.rbenv  ]] && \
-  export PATH=${HOME}/.rbenv/bin:${PATH} && \
-  eval "$(rbenv init -)"
-
-# goenv
-export GOENV_ROOT="$HOME/.goenv"
-export PATH="$GOENV_ROOT/bin:$PATH"
-eval "$(goenv init -)"
-
-# nodenv
-export PATH="$HOME/.nodenv/bin:$PATH"
-eval "$(nodenv init -)"
