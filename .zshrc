@@ -18,7 +18,7 @@ setopt correct_all
 # cd省略
 setopt auto_cd
 
-alias ls="ls -a"
+alias ls="ls -a --color=auto"
 # cd + ls
 function chpwd() { ls }
 # mkdir + cd
