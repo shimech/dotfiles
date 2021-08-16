@@ -35,3 +35,6 @@ function mkcd() {
 alias g="git status; git branch"
 alias gn="git config user.name"
 alias ge="git config user.email"
+
+# apt update & upgrade
+alias apt-latest="sudo apt update && sudo apt upgrade"
