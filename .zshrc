@@ -45,11 +45,11 @@ PATH="$JAVA_HOME/bin:$PATH"
 alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.sh"
 
 # Node.js
-export PATH="$HOME/.nodebrew/current/bin:$PATH"
+export PATH=$HOME/.nodebrew/current/bin:$PATH
 
 # composer
-export PATH="/usr/local/bin:$PATH"
-export PATH="$HOME/.composer/vendor/bin:$PATH"
+export PATH=/usr/local/bin:$PATH
+export PATH=$HOME/.composer/vendor/bin:$PATH
 
 # Git
 alias g="git status; git branch"
@@ -60,7 +60,7 @@ alias ge="git config user.email"
 alias ls-com="ls -l /dev/tty.*"
 
 # poetry
-export PATH="$HOME/.poetry/bin:$PATH"
+export PATH=$HOME/.poetry/bin:$PATH
 
 # rbenv
 [[ -d ~/.rbenv  ]] && \
@@ -71,6 +71,9 @@ export PATH="$HOME/.poetry/bin:$PATH"
 export GOENV_ROOT=$HOME/.goenv
 export PATH=$GOENV_ROOT/bin:$PATH
 eval "$(goenv init -)"
+
+export PATH=$GOROOT/bin:$PATH
+export PATH=$PATH:$GOPATH/bin
 
 # nodenv
 export PATH="$HOME/.nodenv/bin:$PATH"
