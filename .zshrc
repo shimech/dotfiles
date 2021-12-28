@@ -79,6 +79,9 @@ export PATH=$PATH:$GOPATH/bin
 export PATH="$HOME/.nodenv/bin:$PATH"
 eval "$(nodenv init -)"
 
+# anyenv
+eval "$(anyenv init -)"
+
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/shuntaro/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/shuntaro/google-cloud-sdk/path.zsh.inc'; fi
 
