@@ -75,10 +75,6 @@ eval "$(goenv init -)"
 export PATH=$GOROOT/bin:$PATH
 export PATH=$PATH:$GOPATH/bin
 
-# nodenv
-export PATH="$HOME/.nodenv/bin:$PATH"
-eval "$(nodenv init -)"
-
 # anyenv
 eval "$(anyenv init -)"
 
