@@ -37,8 +37,8 @@ eval "$(pyenv init -)"
 # PostgresSQL
 export PGDATA=/usr/local/var/postgres
 
-# Java8
-export JAVA_HOME=`/usr/libexec/java_home -v "14"`
+# Java
+export JAVA_HOME=`/usr/libexec/java_home -v 18`
 PATH="$JAVA_HOME/bin:$PATH"
 
 # Alias for Homebrew Update
