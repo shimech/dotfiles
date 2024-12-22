@@ -79,3 +79,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
+
+# JDK
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home
+
