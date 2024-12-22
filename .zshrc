@@ -37,6 +37,9 @@ alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.s
 # COM
 alias ls-com="ls -l /dev/tty.*"
 
+# ripgrep
+alias rg="rg --hidden"
+
 # composer
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.composer/vendor/bin:$PATH
