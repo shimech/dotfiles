@@ -44,41 +44,11 @@ alias rg="rg --hidden"
 export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.composer/vendor/bin:$PATH
 
-# pyenv
-eval "$(pyenv init -)"
-
-# poetry
-export PATH=$HOME/.local/bin:$PATH
-
-# rbenv
-[[ -d ~/.rbenv  ]] && \
-  export PATH=${HOME}/.rbenv/bin:${PATH} && \
-  eval "$(rbenv init -)"
-
-# goenv
-export GOENV_ROOT=$HOME/.goenv
-export PATH=$GOENV_ROOT/bin:$PATH
-eval "$(goenv init -)"
-alias go=~/.goenv/shims/go
-
-export PATH=$GOROOT/bin:$PATH
-export PATH=$PATH:$GOPATH/bin
-
-# anyenv
-eval "$(anyenv init -)"
-
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/shuntaro/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/shuntaro/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/shuntaro/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/shuntaro/google-cloud-sdk/completion.zsh.inc'; fi
-
-# bun completions
-[ -s "/Users/shuntaro/.bun/_bun" ] && source "/Users/shuntaro/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
 
 # mise
 eval "$(~/.local/bin/mise activate zsh)"
