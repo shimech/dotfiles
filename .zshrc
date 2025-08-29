@@ -31,6 +31,8 @@ function mkcd() {
   fi
 }
 
+alias latest="brew-latest && mise upgrade"
+
 # Alias for Homebrew Update
 alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.sh"
 
