@@ -31,10 +31,10 @@ function mkcd() {
   fi
 }
 
-alias latest="brew-latest && mise upgrade"
+alias latest="brew-latest && mise upgrade && sh ~/shimech.sh"
 
 # Alias for Homebrew Update
-alias brew-latest="brew update && brew upgrade && brew cleanup && sh ~/shimech.sh"
+alias brew-latest="brew update && brew upgrade && brew cleanup"
 
 # COM
 alias ls-com="ls -l /dev/tty.*"
@@ -57,4 +57,3 @@ eval "$(~/.local/bin/mise activate zsh)"
 
 # JDK
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home
-
