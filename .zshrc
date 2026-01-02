@@ -33,6 +33,25 @@ function mkcd() {
 
 alias latest="brew-latest && mise upgrade && sh ~/shimech.sh"
 
+# fzf
+alias fzf="fzf --reverse --height 40%"
+
+function fzf-select-history() {
+  BUFFER=$(history -n -r 1 | fzf --query "$LBUFFER")
+  CURSOR=$#BUFFER
+  zle reset-prompt
+}
+zle -N fzf-select-history
+bindkey '^r' fzf-select-history
+
+function ghq-cd() {
+  local selected_repo
+  selected_repo=$(ghq list | fzf)
+  if [[ -n "$selected_repo" ]]; then
+      cd "$(ghq root)/$selected_repo" || return 1
+  fi
+}
+
 # Alias for Homebrew Update
 alias brew-latest="brew update && brew upgrade && brew cleanup"
 
