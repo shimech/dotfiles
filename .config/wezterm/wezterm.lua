@@ -2,11 +2,12 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
-config.keys = require("keybinds").keys
-config.key_tables = require("keybinds").key_tables
-config.leader = { key = 'q', mods = 'CTRL' }
+local keybinds = require 'keybinds'
+config.keys = keybinds.keys
+config.key_tables = keybinds.key_tables
+config.leader = keybinds.leader
 
-require("on")
+require 'on'
 
 -- https://wezterm.org/config/lua/config/automatically_reload_config.html
 config.automatically_reload_config = true

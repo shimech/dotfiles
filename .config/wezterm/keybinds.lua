@@ -220,5 +220,7 @@ return {
       { key = 'DownArrow', mods = 'NONE', action = act.CopyMode 'NextMatch' },
     },
 
-  }
+  },
+
+  leader = { key = 'q', mods = 'CTRL' },
 }
