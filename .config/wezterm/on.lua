@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm'
+local mux = wezterm.mux
 
 wezterm.on('update-right-status', function(window, pane)
     local name = window:active_key_table()
@@ -11,4 +12,10 @@ wezterm.on('update-right-status', function(window, pane)
     else
       window:set_right_status('')
     end
+  end)
+
+wezterm.on('gui-startup', function(window)
+    local tab, pane, window = mux.spawn_window(cmd or {})
+    local gui_window = window:gui_window();
+    gui_window:maximize()
   end)

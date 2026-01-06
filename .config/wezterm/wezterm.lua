@@ -24,10 +24,12 @@ config.window_background_opacity = 0.8
 config.macos_window_background_blur = 20
 
 config.window_decorations = 'RESIZE'
+config.native_macos_fullscreen_mode = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 
 config.font = wezterm.font 'Hack'
+config.pane_select_font = wezterm.font 'Hack'
 config.font_size = 14.0
 
 config.use_ime = true
