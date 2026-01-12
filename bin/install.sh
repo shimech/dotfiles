@@ -10,7 +10,14 @@ ln -sf $WORKDIR/.zlogin $HOME/.zlogin
 ln -sf $WORKDIR/.zlogout $HOME/.zlogout
 ln -sf $WORKDIR/.zpreztorc $HOME/.zpreztorc
 
+# Neovim
+find $WORKDIR/.config/nvim -type f | while read src; do
+  dst=$HOME/.config/nvim${src#$WORKDIR/.config/nvim}
+  mkdir -p $(dirname $dst)
+  ln -sf $src $dst
+done
+
 # WezTerm
 for f in $WORKDIR/.config/wezterm/*; do
-  ln -sf "$f" $HOME/.config/wezterm/
+  ln -sf $f $HOME/.config/wezterm/
 done
