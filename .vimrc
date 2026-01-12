@@ -8,18 +8,16 @@ set showcmd
 set number
 " Highlight the current row
 set cursorline
-" Highlight the current column
-set cursorcolumn
 set virtualedit=onemore
 set smartindent
-set visualbell
 set showmatch
 set laststatus=2
 set wildmode=list:longest
 nnoremap j gj
 nnoremap k gk
 syntax enable
-set list listchars=tab:\▸\-
+set list
+set listchars+=eol:$
 set expandtab
 set tabstop=2
 set shiftwidth=2
@@ -30,3 +28,6 @@ set wrapscan
 set hlsearch
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 colorscheme iceberg
+
+" Remove trailing spaces before save.
+autocmd BufWritePre * :%s/\s\+$//ge
