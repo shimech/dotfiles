@@ -29,7 +29,10 @@ config.native_macos_fullscreen_mode = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.tab_max_width = 48
-config.font = wezterm.font_with_fallback { 'Hack', 'Noto Sans JP' }
+config.font = wezterm.font_with_fallback {
+  { family = 'IBM Plex Mono', weight = 'Medium' },
+  'Noto Sans JP'
+}
 config.pane_select_font = wezterm.font 'Hack'
 config.font_size = 14.0
 config.use_ime = true
