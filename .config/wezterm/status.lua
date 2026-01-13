@@ -63,7 +63,6 @@ end
 
 local function update_right_status(window, pane)
   window:set_right_status(wezterm.format({
-    { Attribute = { Intensity = 'Bold' } },
     { Background = { Color = '#84a0c6' } },
     { Foreground = { Color = color_fg } },
     { Text = ' ' .. wezterm.nerdfonts.oct_device_desktop .. ' ' .. pane:get_domain_name() .. ' ' },
