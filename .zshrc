@@ -48,7 +48,15 @@ function ghq-cd() {
   local selected_repo
   selected_repo=$(ghq list | fzf)
   if [[ -n "$selected_repo" ]]; then
-      cd "$(ghq root)/$selected_repo" || return 1
+    cd "$(ghq root)/$selected_repo" || return 1
+  fi
+}
+
+function git-switch() {
+  local branch
+  branch=$(git branch --all | rg --invert-match "HEAD" | fzf | sed "s/.* //" | sed "s#remotes/[^/]*/##" )
+  if [[ -n "$branch" ]]; then
+    git switch $branch || return 1
   fi
 }
 
