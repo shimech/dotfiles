@@ -54,7 +54,7 @@ function ghq-cd() {
 
 function git-switch() {
   local branch
-  branch=$(git branch --all | rg --invert-match "HEAD" | fzf | sed "s/.* //" | sed "s#remotes/[^/]*/##" )
+  branch=$(git branch --format="%(refname:short)" --all | rg --invert-match "HEAD" | fzf )
   if [[ -n "$branch" ]]; then
     git switch $branch || return 1
   fi
