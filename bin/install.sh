@@ -19,6 +19,7 @@ find $WORKDIR/.vim -type f | while read src; do
 done
 
 # WezTerm
+mkdir -p $HOME/.config/wezterm
 for f in $WORKDIR/.config/wezterm/*; do
   ln -sf $f $HOME/.config/wezterm/
 done
