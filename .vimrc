@@ -26,6 +26,7 @@ set smartcase
 set incsearch
 set wrapscan
 set hlsearch
+set clipboard=unnamed
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 colorscheme iceberg
 

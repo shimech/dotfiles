@@ -31,7 +31,9 @@ function mkcd() {
   fi
 }
 
-alias latest="brew-latest && mise upgrade && sh ~/shimech.sh"
+alias latest="brew-latest && mise upgrade"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 # fzf
 alias fzf="fzf --reverse --height 40%"
@@ -80,7 +82,8 @@ if [ -f '/Users/shuntaro/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/shunta
 if [ -f '/Users/shuntaro/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/shuntaro/google-cloud-sdk/completion.zsh.inc'; fi
 
 # mise
-eval "$(~/.local/bin/mise activate zsh)"
+eval "$(mise activate zsh)"
 
 # JDK
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home
+
