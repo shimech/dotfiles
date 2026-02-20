@@ -26,6 +26,7 @@
       "WebSearch",
       "Bash(/usr/bin/make:*)",
       "Bash(cat:*)",
+      "Bash(cd:*)",
       "Bash(echo:*)",
       "Bash(find:*)",
       "Bash(gh:*)",
@@ -46,7 +47,11 @@
       "Bash(git commit:*)",
       "Bash(git merge:*)",
       "Bash(git rebase:*)",
-      "Bash(mkdir:*)"
+      "Bash(git reset:*)",
+      "Bash(mkdir:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(rm:*)"
     ],
     "deny": ["Bash(git push:*)"]
   }
