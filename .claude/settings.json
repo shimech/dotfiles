@@ -53,6 +53,8 @@
       "Bash(python3:*)",
       "Bash(rm:*)"
     ],
-    "deny": ["Bash(git push:*)"]
+    "deny": [
+      "Bash(git push:*)"
+    ]
   }
 }
