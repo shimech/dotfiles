@@ -1,2 +1,3 @@
-install:
-	sh ./bin/install.sh
+.PHONY: setup
+setup:
+	@./bin/setup.sh

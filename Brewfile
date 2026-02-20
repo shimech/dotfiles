@@ -1,0 +1,23 @@
+brew "tree"
+brew "cask"
+brew "curl"
+brew "docker", link: false
+brew "docker-compose", link: false
+brew "fastfetch"
+brew "figlet"
+brew "fzf"
+brew "gh"
+brew "ghc"
+brew "ghq"
+brew "git"
+brew "git-delta"
+brew "jq"
+brew "jsonnet"
+brew "lolcat"
+brew "mise"
+brew "ripgrep"
+brew "terminal-notifier"
+brew "terraform"
+brew "tfenv", link: false
+brew "wget"
+cask "wezterm@nightly"

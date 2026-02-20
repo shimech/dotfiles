@@ -31,7 +31,7 @@ function mkcd() {
   fi
 }
 
-alias latest="brew-latest && mise upgrade"
+alias latest="./latest.sh"
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -62,9 +62,6 @@ function git-switch() {
   fi
 }
 
-# Alias for Homebrew Update
-alias brew-latest="brew update && brew upgrade && brew cleanup"
-
 # COM
 alias ls-com="ls -l /dev/tty.*"
 
@@ -87,3 +84,5 @@ eval "$(mise activate zsh)"
 # JDK
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Contents/Home
 
+# fastfetch
+fastfetch
