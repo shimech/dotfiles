@@ -35,6 +35,7 @@
       "Bash(jq:*)",
       "Bash(ls:*)",
       "Bash(pnpm:*)",
+      "Bash(printf:*)",
       "Bash(rg:*)",
       "Bash(tail:*)",
       "Bash(tree:*)",
