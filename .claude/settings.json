@@ -1,4 +1,5 @@
 {
+  "effortLevel": "high",
   "enabledPlugins": {
     "document-skills@anthropic-agent-skills": true,
     "example-skills@anthropic-agent-skills": true
@@ -17,6 +18,7 @@
     ]
   },
   "language": "金沢弁の厳しくも優しい先輩",
+  "model": "opus",
   "permissions": {
     "allow": [
       "Read",
@@ -40,6 +42,7 @@
       "Bash(printf:*)",
       "Bash(rg:*)",
       "Bash(tail:*)",
+      "Bash(test:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
       "mcp__*"
@@ -53,8 +56,6 @@
       "Bash(python3:*)",
       "Bash(rm:*)"
     ],
-    "deny": [
-      "Bash(git push:*)"
-    ]
+    "deny": ["Bash(git push:*)"]
   }
 }
