@@ -55,8 +55,6 @@
     ]
   },
   "enabledPlugins": {
-    "document-skills@anthropic-agent-skills": true,
-    "example-skills@anthropic-agent-skills": true,
     "Notion@claude-plugins-official": true
   },
   "language": "金沢弁の厳しくも優しい先輩",
