@@ -1,24 +1,4 @@
 {
-  "effortLevel": "high",
-  "enabledPlugins": {
-    "document-skills@anthropic-agent-skills": true,
-    "example-skills@anthropic-agent-skills": true
-  },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "~/.claude/hooks/notify.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": ""
-      }
-    ]
-  },
-  "language": "金沢弁の厳しくも優しい先輩",
-  "model": "opus",
   "permissions": {
     "allow": [
       "Read",
@@ -47,6 +27,9 @@
       "Bash(which:*)",
       "mcp__*"
     ],
+    "deny": [
+      "Bash(git push:*)"
+    ],
     "ask": [
       "Bash(git commit:*)",
       "Bash(git merge:*)",
@@ -55,7 +38,27 @@
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(rm:*)"
-    ],
-    "deny": ["Bash(git push:*)"]
-  }
+    ]
+  },
+  "model": "opus",
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "Notion@claude-plugins-official": true
+  },
+  "language": "金沢弁の厳しくも優しい先輩",
+  "effortLevel": "high"
 }
