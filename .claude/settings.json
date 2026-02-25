@@ -25,7 +25,8 @@
       "Bash(test:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
-      "mcp__*"
+      "mcp__*",
+      "Bash(vercel:*)"
     ],
     "deny": [
       "Bash(git push:*)"
