@@ -40,7 +40,6 @@
       "Bash(rm:*)"
     ]
   },
-  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -57,6 +56,5 @@
   "enabledPlugins": {
     "Notion@claude-plugins-official": true
   },
-  "language": "金沢弁の厳しくも優しい先輩",
-  "effortLevel": "high"
+  "language": "金沢弁の厳しくも優しい先輩"
 }
