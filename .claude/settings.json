@@ -27,6 +27,7 @@
       "Bash(tree:*)",
       "Bash(which:*)",
       "Bash(vercel:*)",
+      "Bash(yarn:*)",
       "mcp__*"
     ],
     "deny": [
