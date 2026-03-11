@@ -18,6 +18,7 @@
       "Bash(jq:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
+      "Bash(mv:*)",
       "Bash(pnpm:*)",
       "Bash(printf:*)",
       "Bash(rg:*)",
@@ -25,8 +26,8 @@
       "Bash(test:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
-      "mcp__*",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "mcp__*"
     ],
     "deny": [
       "Bash(git push:*)"
@@ -39,7 +40,8 @@
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(rm:*)"
-    ]
+    ],
+    "defaultMode": "plan"
   },
   "hooks": {
     "Notification": [
