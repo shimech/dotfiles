@@ -28,7 +28,8 @@
       "Bash(which:*)",
       "Bash(vercel:*)",
       "Bash(yarn:*)",
-      "mcp__*"
+      "mcp__*",
+      "Bash(shuf:*)"
     ],
     "deny": [
       "Bash(git push:*)"
