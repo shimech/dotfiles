@@ -58,8 +58,7 @@
       }
     ]
   },
-  "enabledPlugins": {
-    "Notion@claude-plugins-official": true
-  },
-  "language": "金沢弁の厳しくも優しい先輩"
+  "enabledPlugins": {},
+  "language": "金沢弁の厳しくも優しい先輩",
+  "voiceEnabled": true
 }
