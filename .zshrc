@@ -36,6 +36,9 @@ alias colima-start="colima start --cpu $(sysctl -n hw.ncpu) --memory $(($(sysctl
 
 export PATH="$HOME/.local/bin:$PATH"
 
+# vim
+alias vim="nvim"
+
 # fzf
 alias fzf="fzf --reverse --height 40%"
 

@@ -27,10 +27,20 @@ find $WORKDIR/.vim -type f | while read src; do
   ln -sf $src $dst
 done
 
+## Neovim
+mkdir -p $HOME/.config/nvim
+find $WORKDIR/.config/nvim -type f | while read src; do
+  dst=$HOME/.config/nvim${src#$WORKDIR/.config/nvim}
+  mkdir -p $(dirname $dst)
+  ln -sf $src $dst
+done
+
 ## WezTerm
 mkdir -p $HOME/.config/wezterm
-for f in $WORKDIR/.config/wezterm/*; do
-  ln -sf $f $HOME/.config/wezterm/
+find $WORKDIR/.config/wezterm -type f | while read src; do
+  dst=$HOME/.config/wezterm${src#$WORKDIR/.config/wezterm}
+  mkdir -p $(dirname $dst)
+  ln -sf $src $dst
 done
 
 ## Claude Code
