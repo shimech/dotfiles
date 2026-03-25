@@ -209,5 +209,5 @@ return {
 
   },
 
-  leader = { key = 'q', mods = 'CTRL' },
+  leader = { key = 'Space', mods = 'CTRL' },
 }
