@@ -1,0 +1,13 @@
+background-blur = 10
+background-opacity = 0.8
+command = "/opt/homebrew/bin/tmux new-session -A -s main"
+cursor-style = block
+cursor-style-blink = false
+font-family = "BlexMono Nerd Font Mono"
+font-family = "Noto Sans JP"
+font-size = 12
+language = en
+macos-option-as-alt = true
+macos-titlebar-style = hidden
+maximize = true
+theme = Nordfox
