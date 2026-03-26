@@ -1,6 +1,6 @@
 background-blur = 10
 background-opacity = 0.8
-command = "/opt/homebrew/bin/tmux new-session -A -s main"
+command = "/opt/homebrew/bin/tmux new-session -A -s 0-main"
 cursor-style = block
 cursor-style-blink = false
 font-family = "BlexMono Nerd Font Mono"
