@@ -1,4 +1,5 @@
 local wezterm = require "wezterm"
+local workspaces = require "workspaces"
 local act = wezterm.action
 
 return {
@@ -112,11 +113,13 @@ return {
     { key = "q", mods = "SUPER", action = act.QuitApplication },
     { key = "r", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
     { key = "r", mods = "SUPER", action = act.ReloadConfiguration },
+    { key = "s", mods = "SUPER", action = act.ShowLauncherArgs { flags = "WORKSPACES" } },
     { key = "t", mods = "SUPER", action = act.SpawnCommandInNewTab { cwd = wezterm.home_dir, domain = "CurrentPaneDomain" } },
     { key = "u", mods = "SHIFT|CTRL", action = act.CharSelect{ copy_on_select = true, copy_to =  "ClipboardAndPrimarySelection" } },
     { key = "v", mods = "SHIFT|CTRL", action = act.PasteFrom "Clipboard" },
     { key = "v", mods = "SUPER", action = act.PasteFrom "Clipboard" },
     { key = "w", mods = "SUPER", action = act.CloseCurrentPane { confirm = true } },
+    { key = "w", mods = "LEADER", action = workspaces.switch_action },
     { key = "x", mods = "SHIFT|CTRL", action = act.ActivateCopyMode },
     { key = "z", mods = "SHIFT|CTRL", action = act.TogglePaneZoomState },
     { key = "{", mods = "SUPER", action = act.ActivateTabRelative(-1) },

@@ -65,7 +65,7 @@ local function update_right_status(window, pane)
   window:set_right_status(wezterm.format({
     { Background = { Color = "#84a0c6" } },
     { Foreground = { Color = color_fg } },
-    { Text = " " .. wezterm.nerdfonts.oct_device_desktop .. " " .. pane:get_domain_name() .. " " },
+    { Text = " " .. wezterm.nerdfonts.oct_device_desktop .. " " .. window:active_workspace() .. " " },
   })
   )
 end
