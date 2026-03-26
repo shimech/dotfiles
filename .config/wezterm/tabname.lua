@@ -1,5 +1,24 @@
 local wezterm = require "wezterm"
 
+local function get_tab_title(tab)
+  local tab_title = tab.tab_title
+  if tab_title and #tab_title > 0 then
+    return tab_title
+  end
+
+  local pane = tab.active_pane
+  local cwd = pane.current_working_dir
+
+  if cwd then
+    -- file_pathの末尾は"/"であるため削除する。
+    local display_path = get_display_path(cwd.file_path:sub(1, -2), pane.title)
+
+    return display_path
+  end
+
+  return pane.title
+end
+
 -- 絶対パスを表示用のパスに変換する。
 local function get_display_path(cwd_path, fallback)
   local home = wezterm.home_dir
@@ -35,18 +54,9 @@ local function get_display_path(cwd_path, fallback)
 end
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-    local pane = tab.active_pane
-    local cwd = pane.current_working_dir
-
-    if cwd then
-      -- file_pathの末尾は"/"であるため削除する。
-      local display_path = get_display_path(cwd.file_path:sub(1, -2), pane.title)
-
-      return {
-        { Text = " " .. wezterm.nerdfonts.md_tab .. " " .. tab.tab_index + 1 .. " " .. display_path .. " " },
-      }
-    end
-
-    return pane.title
+    local tab_title = get_tab_title(tab)
+    return {
+      { Text = " " .. wezterm.nerdfonts.md_tab .. " " .. tab.tab_index + 1 .. " " .. tab_title .. " " },
+    }
   end
 )

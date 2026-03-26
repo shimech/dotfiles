@@ -28,17 +28,14 @@ return {
         }, pane)
 
         if project.layout then
+          -- 新規セッションが作成されるまで0.5秒待つ。
           wezterm.time.call_after(0.5, function()
-            local workspace_windows = mux.get_workspace_names()
             for _, ws in ipairs(mux.all_windows()) do
               if ws:get_workspace() == label then
                 local tabs = ws:tabs()
-                if #tabs == 1 and #tabs[1]:panes() == 1 then
-                  local tab = tabs[1]
-                  local first_pane = tab:panes()[1]
-                  project.layout(tab, first_pane, ws, project.cwd)
-                end
-                break
+                local tab = tabs[1]
+                local first_pane = tab:panes()[1]
+                project.layout(tab, first_pane, ws, project.cwd)
               end
             end
           end)
