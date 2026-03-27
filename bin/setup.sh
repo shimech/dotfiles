@@ -35,6 +35,14 @@ find $WORKDIR/.config/nvim -type f | while read src; do
   ln -sf $src $dst
 done
 
+## tmuxinator
+mkdir -p $HOME/.config/tmuxinator
+find $WORKDIR/.config/tmuxinator -type f | while read src; do
+  dst=$HOME/.config/tmuxinator${src#$WORKDIR/.config/tmuxinator}
+  mkdir -p $(dirname $dst)
+  ln -sf $src $dst
+done
+
 ## WezTerm
 mkdir -p $HOME/.config/wezterm
 find $WORKDIR/.config/wezterm -type f | while read src; do

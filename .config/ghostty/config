@@ -1,5 +1,5 @@
 background-blur = 10
-background-opacity = 0.8
+background-opacity = 0.85
 command = "/opt/homebrew/bin/tmux new-session -A -s 0-main"
 cursor-style = block
 cursor-style-blink = false
@@ -11,3 +11,9 @@ macos-option-as-alt = true
 macos-titlebar-style = hidden
 maximize = true
 theme = Nordfox
+
+# keybinds
+keybind = super+d=unbind
+keybind = super+shift+d=unbind
+keybind = super+t=unbind
+keybind = ctrl+alt+enter=toggle_maximize
