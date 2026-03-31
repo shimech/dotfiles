@@ -12,6 +12,12 @@ return {
       { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
     },
     opts = {
+      window = {
+        mappings = {
+          ["<space>"] = "none",
+          ["q"] = "none",
+        },
+      },
       default_component_configs = {
         git_status = {
           symbols = {
@@ -30,6 +36,12 @@ return {
       filesystem = {
         async_directory_scan = "auto",
         use_libuv_file_watcher = true,
+        window = {
+          mappings = {
+            ["<bs>"] = "none",
+            ["."] = "none",
+          },
+        },
         filtered_items = {
           visible = true,
           hide_dotfiles = false,

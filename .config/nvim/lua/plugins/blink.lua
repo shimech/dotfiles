@@ -52,8 +52,14 @@ return {
     -- コマンドラインでも自動でfuzzy補完を表示
     cmdline = {
       enabled = true,
+      keymap = {
+        ['<Tab>'] = { 'show', 'select_next', 'fallback' },
+        ['<S-Tab>'] = { 'select_prev', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+      },
       completion = {
         menu = { auto_show = true },
+        list = { selection = { preselect = false, auto_insert = true } },
       },
     },
   },
