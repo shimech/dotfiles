@@ -17,12 +17,12 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      lspconfig.ts_ls.setup({
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
       })
+      vim.lsp.enable("ts_ls")
 
       -- LSP keymaps (LSP がアタッチされたバッファのみ)
       vim.api.nvim_create_autocmd("LspAttach", {
