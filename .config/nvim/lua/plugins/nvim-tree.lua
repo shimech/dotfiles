@@ -34,6 +34,10 @@ return {
         },
       },
       filesystem = {
+        follow_current_file = {
+          enabled = true,
+          leave_dirs_open = true,
+        },
         async_directory_scan = "auto",
         use_libuv_file_watcher = true,
         window = {
