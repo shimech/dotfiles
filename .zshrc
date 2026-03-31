@@ -60,9 +60,17 @@ function ghq-cd() {
 
 function git-switch() {
   local branch
-  branch=$(git branch --format="%(refname:short)" --all | rg --invert-match "HEAD" | fzf )
+  branch=$(git branch --format="%(refname:short)" --all | rg --invert-match "HEAD" | fzf)
   if [[ -n "$branch" ]]; then
     git switch $branch || return 1
+  fi
+}
+
+function tmux-start-project() {
+  local project
+  project=$(tmuxinator list --newline --no-active | rg --invert-match "tmuxinator projects:" | fzf)
+  if [[ -n "$project" ]]; then
+    tmuxinator start $project || return 1
   fi
 }
 
