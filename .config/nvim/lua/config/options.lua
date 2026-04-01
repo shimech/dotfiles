@@ -1,3 +1,8 @@
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  command = "if mode() != 'c' | checktime | endif",
+})
+
 vim.opt.number = true
 vim.opt.clipboard = "unnamedplus"
 vim.opt.list = true

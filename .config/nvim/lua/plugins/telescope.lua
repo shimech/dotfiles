@@ -7,7 +7,8 @@ return {
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
     keys = {
-      { "<leader>p", "<cmd>Telescope find_files hidden=true no_ignore=true<cr>", desc = "Find Files" },
+      { "<leader> ", "<cmd>Telescope find_files hidden=true no_ignore=true<cr>", desc = "Find Files" },
+      { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Live Grep" },
     },
   },
 }
