@@ -24,6 +24,8 @@ vim.opt.listchars = { tab = "→ ", trail = "·", lead = "·", space = "·" }
 vim.api.nvim_set_hl(0, "TrailWhitespace", { fg = "#e27878", bg = "#33252a" })
 vim.fn.matchadd("TrailWhitespace", [[\s\+$]])
 
+vim.opt.showmatch = true
+
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 2
 vim.opt.tabstop = 2
