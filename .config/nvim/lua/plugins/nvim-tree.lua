@@ -11,6 +11,18 @@ return {
     keys = {
       { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Neo-tree" },
     },
+    config = function(_, opts)
+      require("neo-tree").setup(opts)
+
+      -- neo-treeのgit statusをリアルタイムでリフレッシュする
+      vim.api.nvim_create_autocmd({ "FocusGained", "BufWritePost", "TermClose", "TermLeave" }, {
+        callback = function()
+          if package.loaded["neo-tree.sources.manager"] then
+            require("neo-tree.sources.manager").refresh()
+          end
+        end,
+      })
+    end,
     opts = {
       window = {
         mappings = {
