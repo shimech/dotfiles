@@ -14,6 +14,8 @@ return {
       vim.api.nvim_set_hl(0, "WhichKeyBorder", { bg = "#161821" })
       vim.api.nvim_set_hl(0, "NoiceHover", { bg = "#161821" })
       vim.api.nvim_set_hl(0, "NoiceHoverBorder", { fg = "#6b7089", bg = "#161821" })
+      vim.api.nvim_set_hl(0, "TreesitterContext", { bg = "#1e2132" })
+      vim.api.nvim_set_hl(0, "TreesitterContextSeparator", { fg = "#6b7089" })
     end,
   },
 }
