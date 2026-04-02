@@ -10,7 +10,7 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ensure_installed = { "ts_ls" },
+      ensure_installed = { "ts_ls", "lua_ls", "eslint" },
     },
   },
   {
@@ -23,6 +23,26 @@ return {
         capabilities = capabilities,
       })
       vim.lsp.enable("ts_ls")
+
+      vim.lsp.config("lua_ls", {
+        capabilities = capabilities,
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = {
+              library = vim.api.nvim_get_runtime_file("", true),
+              checkThirdParty = false,
+            },
+          },
+        },
+      })
+      vim.lsp.enable("lua_ls")
+
+      vim.lsp.config("eslint", {
+        capabilities = capabilities,
+      })
+      vim.lsp.enable("eslint")
 
       -- LSP keymaps (LSP がアタッチされたバッファのみ)
       vim.api.nvim_create_autocmd("LspAttach", {

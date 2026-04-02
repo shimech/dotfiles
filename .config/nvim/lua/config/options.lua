@@ -1,4 +1,5 @@
 vim.opt.autoread = true
+vim.opt.autowriteall = true
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
   command = "if mode() != 'c' | checktime | endif",
 })
