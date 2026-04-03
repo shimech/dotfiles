@@ -68,5 +68,5 @@ fi
 ##
 
 # MacPorts Installer addition on 2020-08-24_at_14:11:08: adding an appropriate PATH variable for use with MacPorts.
-export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+export PATH="/opt/local/bin:/opt/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 # Finished adapting your PATH environment variable for use with MacPorts.
