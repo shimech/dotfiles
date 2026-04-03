@@ -18,6 +18,7 @@ return {
       { "<leader>a", group = "AI/Claude" },
       { "<leader>f", group = "Find" },
       { "<leader>g", group = "Git" },
+      { "<leader>p", group = "Preview" },
     },
   },
   keys = {
