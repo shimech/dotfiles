@@ -9,6 +9,8 @@
       "Bash(/usr/bin/make:*)",
       "Bash(cat:*)",
       "Bash(cd:*)",
+      "Bash(cp:*)",
+      "Bash(docker:*)",
       "Bash(echo:*)",
       "Bash(find:*)",
       "Bash(gh:*)",
@@ -22,14 +24,16 @@
       "Bash(pnpm:*)",
       "Bash(printf:*)",
       "Bash(rg:*)",
+      "Bash(shuf:*)",
       "Bash(tail:*)",
       "Bash(test:*)",
+      "Bash(tmux:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
       "Bash(vercel:*)",
       "Bash(yarn:*)",
-      "mcp__*",
-      "Bash(shuf:*)"
+      "Bash(yes)",
+      "mcp__*"
     ],
     "deny": [
       "Bash(git push:*)"
