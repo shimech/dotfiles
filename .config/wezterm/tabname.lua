@@ -1,4 +1,4 @@
-local wezterm = require "wezterm"
+local wezterm = require("wezterm")
 
 local function get_tab_title(tab)
   local tab_title = tab.tab_title
@@ -54,9 +54,8 @@ local function get_display_path(cwd_path, fallback)
 end
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-    local tab_title = get_tab_title(tab)
-    return {
-      { Text = " " .. wezterm.nerdfonts.md_tab .. " " .. tab.tab_index + 1 .. " " .. tab_title .. " " },
-    }
-  end
-)
+  local tab_title = get_tab_title(tab)
+  return {
+    { Text = " " .. wezterm.nerdfonts.md_tab .. " " .. tab.tab_index + 1 .. " " .. tab_title .. " " },
+  }
+end)

@@ -1,15 +1,15 @@
-local wezterm = require "wezterm"
+local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-local keybinds = require "keybinds"
+local keybinds = require("keybinds")
 config.keys = keybinds.keys
 config.key_tables = keybinds.key_tables
 config.leader = keybinds.leader
 
-require "on"
-require "status"
-require "tabname"
+require("on")
+require("status")
+require("tabname")
 
 -- https://wezterm.org/config/lua/config/automatically_reload_config.html
 config.automatically_reload_config = true
@@ -29,11 +29,11 @@ config.native_macos_fullscreen_mode = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 config.tab_max_width = 48
-config.font = wezterm.font_with_fallback {
+config.font = wezterm.font_with_fallback({
   { family = "IBM Plex Mono", weight = "Medium" },
-  "Noto Sans JP"
-}
-config.pane_select_font = wezterm.font "Hack"
+  "Noto Sans JP",
+})
+config.pane_select_font = wezterm.font("Hack")
 config.font_size = 12.0
 config.use_ime = true
 

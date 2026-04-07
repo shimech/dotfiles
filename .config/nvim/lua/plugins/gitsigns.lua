@@ -3,26 +3,26 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   opts = {
     signs = {
-      add          = { text = "┃" },
-      change       = { text = "┃" },
-      delete       = { text = "_" },
-      topdelete    = { text = "‾" },
+      add = { text = "┃" },
+      change = { text = "┃" },
+      delete = { text = "_" },
+      topdelete = { text = "‾" },
       changedelete = { text = "~" },
-      untracked    = { text = "┆" },
+      untracked = { text = "┆" },
     },
     signs_staged = {
-      add          = { text = "┃" },
-      change       = { text = "┃" },
-      delete       = { text = "_" },
-      topdelete    = { text = "‾" },
+      add = { text = "┃" },
+      change = { text = "┃" },
+      delete = { text = "_" },
+      topdelete = { text = "‾" },
       changedelete = { text = "~" },
-      untracked    = { text = "┆" },
+      untracked = { text = "┆" },
     },
     signs_staged_enable = true,
     signcolumn = true,
-    numhl      = false,
-    linehl     = false,
-    word_diff  = false,
+    numhl = false,
+    linehl = false,
+    word_diff = false,
     watch_gitdir = {
       follow_files = true,
     },
@@ -51,11 +51,47 @@ return {
     },
   },
   keys = {
-    { "]h", function() require("gitsigns").nav_hunk("next") end, desc = "Next hunk" },
-    { "[h", function() require("gitsigns").nav_hunk("prev") end, desc = "Previous hunk" },
-    { "<leader>gp", function() require("gitsigns").preview_hunk() end, desc = "Preview hunk" },
-    { "<leader>gr", function() require("gitsigns").reset_hunk() end, desc = "Reset hunk" },
-    { "<leader>gs", function() require("gitsigns").stage_hunk() end, desc = "Stage hunk" },
-    { "<leader>gb", function() require("gitsigns").blame_line() end, desc = "Blame line" },
+    {
+      "]h",
+      function()
+        require("gitsigns").nav_hunk("next")
+      end,
+      desc = "Next hunk",
+    },
+    {
+      "[h",
+      function()
+        require("gitsigns").nav_hunk("prev")
+      end,
+      desc = "Previous hunk",
+    },
+    {
+      "<leader>gp",
+      function()
+        require("gitsigns").preview_hunk()
+      end,
+      desc = "Preview hunk",
+    },
+    {
+      "<leader>gr",
+      function()
+        require("gitsigns").reset_hunk()
+      end,
+      desc = "Reset hunk",
+    },
+    {
+      "<leader>gs",
+      function()
+        require("gitsigns").stage_hunk()
+      end,
+      desc = "Stage hunk",
+    },
+    {
+      "<leader>gb",
+      function()
+        require("gitsigns").blame_line()
+      end,
+      desc = "Blame line",
+    },
   },
 }

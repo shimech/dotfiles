@@ -70,7 +70,11 @@ return {
               border = "rounded",
               focusable = false,
             })
-            vim.api.nvim_set_option_value("winhl", "Normal:NeoTreeFloatName,FloatBorder:NeoTreeFloatNameBorder", { win = float_win_id })
+            vim.api.nvim_set_option_value(
+              "winhl",
+              "Normal:NeoTreeFloatName,FloatBorder:NeoTreeFloatNameBorder",
+              { win = float_win_id }
+            )
           end,
         },
         {
@@ -89,15 +93,15 @@ return {
       default_component_configs = {
         git_status = {
           symbols = {
-            added     = "+",
-            modified  = "M",
-            deleted   = "x",
-            renamed   = "→",
+            added = "+",
+            modified = "M",
+            deleted = "x",
+            renamed = "→",
             untracked = "",
-            ignored   = "i",
-            unstaged  = "U",
-            staged    = "",
-            conflict  = "",
+            ignored = "i",
+            unstaged = "U",
+            staged = "",
+            conflict = "",
           },
         },
       },
@@ -121,5 +125,5 @@ return {
         },
       },
     },
-  }
+  },
 }
