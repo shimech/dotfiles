@@ -44,6 +44,26 @@ return {
       })
       vim.lsp.enable("eslint")
 
+      -- 保存時に足りない import を自動追加 (TypeScript)
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        pattern = { "*.ts", "*.tsx", "*.js", "*.jsx" },
+        callback = function(args)
+          local clients = vim.lsp.get_clients({ bufnr = args.buf, name = "ts_ls" })
+          if #clients == 0 then
+            return
+          end
+          vim.lsp.buf.code_action({
+            context = {
+              only = { "source.addMissingImports.ts" },
+              diagnostics = {},
+            },
+            apply = true,
+          })
+          -- code_action は非同期なので少し待つ
+          vim.wait(1000, function() end)
+        end,
+      })
+
       -- LSP keymaps (LSP がアタッチされたバッファのみ)
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
