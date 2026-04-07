@@ -23,5 +23,6 @@ return {
     vim.api.nvim_set_hl(0, "LazyNormal", { bg = "#161821" })
     vim.api.nvim_set_hl(0, "LazyButton", { bg = "#161821" })
     vim.api.nvim_set_hl(0, "LazyButtonActive", { bg = "#1e2132" })
+    vim.api.nvim_set_hl(0, "Visual", { fg = "#161821", bg = "#89b8c2" })
   end,
 }
