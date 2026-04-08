@@ -10,7 +10,7 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ensure_installed = { "ts_ls", "lua_ls", "eslint" },
+      ensure_installed = { "ts_ls", "lua_ls", "eslint", "prismals" },
     },
   },
   {
@@ -43,6 +43,11 @@ return {
         capabilities = capabilities,
       })
       vim.lsp.enable("eslint")
+
+      vim.lsp.config("prismals", {
+        capabilities = capabilities,
+      })
+      vim.lsp.enable("prismals")
 
       -- 保存時に足りない import を自動追加 (TypeScript)
       vim.api.nvim_create_autocmd("BufWritePre", {

@@ -17,6 +17,7 @@ return {
         "yaml",
         "markdown",
         "bash",
+        "prisma",
       },
       highlight = { enable = true },
       indent = { enable = true },
