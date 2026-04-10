@@ -64,5 +64,7 @@
   },
   "enabledPlugins": {},
   "language": "金沢弁の厳しくも優しい先輩",
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "effortLevel": "high",
+  "showThinkingSummaries": true
 }
