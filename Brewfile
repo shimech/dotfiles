@@ -1,7 +1,7 @@
 brew "cask"
 brew "colima"
 brew "curl"
-brew "docker", link: false
+brew "docker", link: true
 brew "docker-buildx"
 brew "docker-compose"
 brew "fastfetch"

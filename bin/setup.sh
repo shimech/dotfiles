@@ -43,10 +43,10 @@ find $WORKDIR/.config/tmuxinator -type f | while read src; do
   ln -sf $src $dst
 done
 
-## WezTerm
-mkdir -p $HOME/.config/wezterm
-find $WORKDIR/.config/wezterm -type f | while read src; do
-  dst=$HOME/.config/wezterm${src#$WORKDIR/.config/wezterm}
+## git
+mkdir -p $HOME/.config/git
+find $WORKDIR/.config/git -type f | while read src; do
+  dst=$HOME/.config/git${src#$WORKDIR/.config/git}
   mkdir -p $(dirname $dst)
   ln -sf $src $dst
 done
