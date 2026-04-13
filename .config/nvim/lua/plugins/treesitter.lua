@@ -18,6 +18,7 @@ return {
         "markdown",
         "bash",
         "prisma",
+        "graphql",
       },
       highlight = { enable = true },
       indent = { enable = true },

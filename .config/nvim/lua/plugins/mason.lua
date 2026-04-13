@@ -10,7 +10,7 @@ return {
       "neovim/nvim-lspconfig",
     },
     opts = {
-      ensure_installed = { "ts_ls", "lua_ls", "eslint", "prismals" },
+      ensure_installed = { "ts_ls", "lua_ls", "eslint", "prismals", "graphql" },
     },
   },
   {
@@ -48,6 +48,24 @@ return {
         capabilities = capabilities,
       })
       vim.lsp.enable("prismals")
+
+      vim.lsp.config("graphql", {
+        capabilities = capabilities,
+        root_markers = {
+          ".graphqlrc",
+          ".graphqlrc.json",
+          ".graphqlrc.yml",
+          ".graphqlrc.yaml",
+          ".graphqlrc.js",
+          ".graphqlrc.ts",
+          "graphql.config.js",
+          "graphql.config.ts",
+          "graphql.config.json",
+          "graphql.config.yml",
+          ".git",
+        },
+      })
+      vim.lsp.enable("graphql")
 
       -- 保存時に足りない import を自動追加 (TypeScript)
       vim.api.nvim_create_autocmd("BufWritePre", {
