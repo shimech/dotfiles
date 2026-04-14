@@ -19,6 +19,9 @@ ln -sf $WORKDIR/.zlogin $HOME/.zlogin
 ln -sf $WORKDIR/.zlogout $HOME/.zlogout
 ln -sf $WORKDIR/.zpreztorc $HOME/.zpreztorc
 
+## tmux
+ln -sf $WORKDIR/.tmux.conf $HOME/.tmux.conf
+
 ## Vim
 ln -sf $WORKDIR/.vimrc $HOME/.vimrc
 find $WORKDIR/.vim -type f | while read src; do
