@@ -62,9 +62,19 @@
       }
     ]
   },
-  "enabledPlugins": {},
+  "enabledPlugins": {
+    "tmux-agent-sidebar@hiroppy": true
+  },
+  "extraKnownMarketplaces": {
+    "hiroppy": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/shuntaro/.tmux/plugins/tmux-agent-sidebar"
+      }
+    }
+  },
   "language": "金沢弁の厳しくも優しい先輩",
-  "voiceEnabled": true,
   "effortLevel": "high",
-  "showThinkingSummaries": true
+  "showThinkingSummaries": true,
+  "voiceEnabled": true
 }
