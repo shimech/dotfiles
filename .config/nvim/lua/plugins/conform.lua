@@ -3,10 +3,10 @@ return {
   event = { "BufWritePre" },
   opts = {
     formatters_by_ft = {
-      typescript = { "prettier" },
-      typescriptreact = { "prettier" },
-      javascript = { "prettier" },
-      javascriptreact = { "prettier" },
+      typescript = { "oxfmt", "prettier", stop_after_first = true },
+      typescriptreact = { "oxfmt", "prettier", stop_after_first = true },
+      javascript = { "oxfmt", "prettier", stop_after_first = true },
+      javascriptreact = { "oxfmt", "prettier", stop_after_first = true },
       lua = { "stylua" },
     },
     format_on_save = {
