@@ -73,8 +73,12 @@
       }
     }
   },
-  "language": "金沢弁の厳しくも優しい先輩",
+  "language": "Japanese",
   "effortLevel": "high",
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
   "showThinkingSummaries": true,
   "voiceEnabled": true
 }
