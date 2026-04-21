@@ -60,6 +60,15 @@ mkdir -p $HOME/.claude/hooks
 for f in $WORKDIR/.claude/hooks/*; do
   ln -sf $f $HOME/.claude/hooks/
 done
+mkdir -p $HOME/.claude/skills
+for d in $WORKDIR/.claude/skills/*/; do
+  name=$(basename $d)
+  ln -sfn $d $HOME/.claude/skills/$name
+done
+
+## bin
+mkdir -p $HOME/.local/bin
+ln -sf $WORKDIR/bin/wt $HOME/.local/bin/wt
 
 ## Other
 ln -sf $WORKDIR/latest.sh $HOME/latest.sh

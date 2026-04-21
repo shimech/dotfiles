@@ -67,6 +67,14 @@ function git-switch() {
   fi
 }
 
+function wt-switch() {
+  local branch
+  branch=$(git branch --format="%(refname:short)" --all | rg --invert-match "HEAD" | fzf)
+  if [[ -n "$branch" ]]; then
+    wt $branch || return 1
+  fi
+}
+
 function tmux-start-project() {
   local project
   project=$(tmuxinator list --newline --no-active | rg --invert-match "tmuxinator projects:" | fzf)
@@ -99,3 +107,11 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/amazon-corretto-21.jdk/Conten
 
 # fastfetch
 fastfetch
+
+# pnpm
+export PNPM_HOME="/Users/shuntaro/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
