@@ -28,11 +28,11 @@ return {
     },
     auto_attach = true,
     attach_to_untracked = false,
-    current_line_blame = false,
+    current_line_blame = true,
     current_line_blame_opts = {
       virt_text = true,
       virt_text_pos = "eol",
-      delay = 1000,
+      delay = 0,
       ignore_whitespace = false,
       virt_text_priority = 100,
       use_focus = true,
