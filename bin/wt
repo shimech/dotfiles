@@ -53,8 +53,8 @@ done
 git rev-parse --show-toplevel >/dev/null 2>&1 || die "not inside a git repository"
 WT_SOURCE="$(git rev-parse --show-toplevel)"
 
-# Resolve back to the primary working tree so we sync from the canonical copy
-# even when wt is invoked from inside another worktree.
+# Resolve the primary working tree for git worktree ops, config lookup, and
+# worktree path construction. Sync source itself is WT_SOURCE (current checkout).
 WT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
 WT_REPO_ROOT="$(cd "$WT_COMMON_DIR/.." && pwd)"
 
@@ -108,13 +108,13 @@ fi
 if [[ ${#WT_SYNC_PATHS[@]} -gt 0 ]]; then
   log "syncing ${#WT_SYNC_PATHS[@]} path(s) into worktree"
   for rel in "${WT_SYNC_PATHS[@]}"; do
-    src="$WT_REPO_ROOT/$rel"
+    src="$WT_SOURCE/$rel"
     if [[ ! -e "$src" ]]; then
       log "  skip (missing): $rel"
       continue
     fi
     log "  sync: $rel"
-    (cd "$WT_REPO_ROOT" && rsync -a --relative "$rel" "$WT_PATH/")
+    (cd "$WT_SOURCE" && rsync -a --relative "$rel" "$WT_PATH/")
   done
 fi
 
