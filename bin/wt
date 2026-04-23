@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 #
 # wt <branch> [--from <base>]
+# wt attach [<branch>]
 #
 # Create or enter a git worktree at <repo>/.claude/worktrees/<branch>,
 # sync gitignored files from the source checkout, run per-repo env setup,
 # and launch tmux window(s) for the worktree.
+#
+# `wt attach` selects an existing worktree (fzf if no arg) and only runs
+# the tmux hook — no sync, no env setup.
 #
 # Per-repo policy lives in <repo>/.worktreerc (shell script).
 # That file may define:
@@ -17,10 +21,15 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage: wt <branch> [--from <base>]
+       wt attach [<branch>]
 
 Arguments:
   <branch>           Branch name to create or enter a worktree for.
   --from <base>      Base ref for a new branch. Defaults to current HEAD.
+
+Subcommands:
+  attach [<branch>]  Select an existing worktree (fzf if no arg) and run
+                     the tmux hook. Skips file sync and env setup.
 EOF
 }
 
@@ -33,134 +42,191 @@ log() {
   printf '\033[1;34m[wt]\033[0m %s\n' "$*"
 }
 
-# --- Arg parsing ----------------------------------------------------------
-BRANCH=""
-BASE=""
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -h|--help) usage; exit 0 ;;
-    --from) BASE="${2:-}"; shift 2 ;;
-    -*) die "unknown option: $1" ;;
-    *)
-      [[ -n "$BRANCH" ]] && die "too many positional arguments"
-      BRANCH="$1"; shift ;;
-  esac
-done
-[[ -n "$BRANCH" ]] || { usage; exit 1; }
+# --- Helpers --------------------------------------------------------------
+resolve_repo() {
+  git rev-parse --show-toplevel >/dev/null 2>&1 || die "not inside a git repository"
+  WT_SOURCE="$(git rev-parse --show-toplevel)"
 
-# --- Locate repo ----------------------------------------------------------
-git rev-parse --show-toplevel >/dev/null 2>&1 || die "not inside a git repository"
-WT_SOURCE="$(git rev-parse --show-toplevel)"
-
-# Resolve the primary working tree for git worktree ops, config lookup, and
-# worktree path construction. Sync source itself is WT_SOURCE (current checkout).
-WT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
-WT_REPO_ROOT="$(cd "$WT_COMMON_DIR/.." && pwd)"
-
-REPO_NAME="$(basename "$WT_REPO_ROOT")"
-
-# Sanitize branch for a filesystem path: feat/foo -> feat-foo
-SANITIZED="${BRANCH//\//-}"
-WT_PATH="$WT_REPO_ROOT/.claude/worktrees/$SANITIZED"
-
-export WT_REPO_ROOT WT_SOURCE WT_PATH
-export WT_BRANCH="$BRANCH"
-
-# --- Create or reuse worktree --------------------------------------------
-branch_exists() {
-  git -C "$WT_REPO_ROOT" show-ref --verify --quiet "refs/heads/$1"
+  # Resolve the primary working tree for git worktree ops, config lookup, and
+  # worktree path construction. Sync source itself is WT_SOURCE (current checkout).
+  WT_COMMON_DIR="$(git rev-parse --path-format=absolute --git-common-dir)"
+  WT_REPO_ROOT="$(cd "$WT_COMMON_DIR/.." && pwd)"
+  REPO_NAME="$(basename "$WT_REPO_ROOT")"
 }
 
-worktree_exists() {
-  git -C "$WT_REPO_ROOT" worktree list --porcelain \
-    | awk '/^worktree /{print $2}' \
-    | grep -Fxq "$WT_PATH"
+load_rc() {
+  WT_SYNC_PATHS=()
+  WT_RC="$WT_REPO_ROOT/.worktreerc"
+  if [[ -f "$WT_RC" ]]; then
+    log "loading $WT_RC"
+    # shellcheck disable=SC1090
+    source "$WT_RC"
+  else
+    log "no .worktreerc — using defaults"
+  fi
 }
 
-if worktree_exists; then
-  log "worktree already exists at $WT_PATH — reusing"
-else
-  mkdir -p "$(dirname "$WT_PATH")"
-  if branch_exists "$BRANCH"; then
-    log "checking out existing branch '$BRANCH' at $WT_PATH"
-    git -C "$WT_REPO_ROOT" worktree add "$WT_PATH" "$BRANCH"
-  else
-    BASE_REF="${BASE:-HEAD}"
-    log "creating new branch '$BRANCH' from '$BASE_REF' at $WT_PATH"
-    git -C "$WT_REPO_ROOT" worktree add -b "$BRANCH" "$WT_PATH" "$BASE_REF"
+launch_tmux() {
+  if ! command -v tmux >/dev/null 2>&1; then
+    log "tmux not found — skipping window launch"
+    return 0
   fi
-fi
 
-# --- Load per-repo config -------------------------------------------------
-WT_SYNC_PATHS=()
-
-WT_RC="$WT_REPO_ROOT/.worktreerc"
-if [[ -f "$WT_RC" ]]; then
-  log "loading $WT_RC"
-  # shellcheck disable=SC1090
-  source "$WT_RC"
-else
-  log "no .worktreerc — using defaults"
-fi
-
-# --- Sync gitignored files -----------------------------------------------
-if [[ ${#WT_SYNC_PATHS[@]} -gt 0 ]]; then
-  log "syncing ${#WT_SYNC_PATHS[@]} path(s) into worktree"
-  for rel in "${WT_SYNC_PATHS[@]}"; do
-    src="$WT_SOURCE/$rel"
-    if [[ ! -e "$src" ]]; then
-      log "  skip (missing): $rel"
-      continue
-    fi
-    log "  sync: $rel"
-    (cd "$WT_SOURCE" && rsync -a --relative "$rel" "$WT_PATH/")
-  done
-fi
-
-# --- Env setup ------------------------------------------------------------
-if declare -F wt_env_setup >/dev/null 2>&1; then
-  log "running wt_env_setup"
-  (cd "$WT_PATH" && wt_env_setup)
-fi
-
-# --- tmux windows ---------------------------------------------------------
-if ! command -v tmux >/dev/null 2>&1; then
-  log "tmux not found — skipping window launch"
-  log "done — worktree at $WT_PATH"
-  exit 0
-fi
-
-if declare -F wt_tmux_windows >/dev/null 2>&1; then
-  if [[ -n "${TMUX:-}" ]]; then
-    log "running wt_tmux_windows in current tmux session"
-    wt_tmux_windows
-  else
-    SESSION="wt-$REPO_NAME-$SANITIZED"
-    if ! tmux has-session -t "$SESSION" 2>/dev/null; then
-      log "starting tmux session '$SESSION' and running wt_tmux_windows"
-      # Create a detached session we can target; user hook adds real windows.
-      tmux new-session -d -s "$SESSION" -c "$WT_PATH"
-      # Mark first window so users can choose to kill it if they create their own.
-      tmux rename-window -t "$SESSION:0" "wt-init"
-    fi
-    # Target the session even without $TMUX set so `tmux new-window` lands there.
-    (cd "$WT_PATH" && wt_tmux_windows)
-    tmux attach -t "$SESSION"
-  fi
-else
-  WINDOW_NAME="[$REPO_NAME] $WT_BRANCH"
-  if [[ -n "${TMUX:-}" ]]; then
-    log "creating tmux window in current session"
-    tmux new-window -n "$WINDOW_NAME" -c "$WT_PATH"
-  else
-    SESSION="wt-$REPO_NAME-$SANITIZED"
-    log "starting tmux session '$SESSION'"
-    if tmux has-session -t "$SESSION" 2>/dev/null; then
-      tmux attach -t "$SESSION"
+  if declare -F wt_tmux_windows >/dev/null 2>&1; then
+    if [[ -n "${TMUX:-}" ]]; then
+      log "running wt_tmux_windows in current tmux session"
+      wt_tmux_windows
     else
-      tmux new-session -s "$SESSION" -n "$WINDOW_NAME" -c "$WT_PATH"
+      local session="wt-$REPO_NAME-$SANITIZED"
+      if ! tmux has-session -t "$session" 2>/dev/null; then
+        log "starting tmux session '$session' and running wt_tmux_windows"
+        # Create a detached session we can target; user hook adds real windows.
+        tmux new-session -d -s "$session" -c "$WT_PATH"
+        # Mark first window so users can choose to kill it if they create their own.
+        tmux rename-window -t "$session:0" "wt-init"
+      fi
+      # Target the session even without $TMUX set so `tmux new-window` lands there.
+      (cd "$WT_PATH" && wt_tmux_windows)
+      tmux attach -t "$session"
+    fi
+  else
+    local window_name="[$REPO_NAME] $WT_BRANCH"
+    if [[ -n "${TMUX:-}" ]]; then
+      log "creating tmux window in current session"
+      tmux new-window -n "$window_name" -c "$WT_PATH"
+    else
+      local session="wt-$REPO_NAME-$SANITIZED"
+      log "starting tmux session '$session'"
+      if tmux has-session -t "$session" 2>/dev/null; then
+        tmux attach -t "$session"
+      else
+        tmux new-session -s "$session" -n "$window_name" -c "$WT_PATH"
+      fi
     fi
   fi
-fi
+}
 
-log "done — worktree at $WT_PATH"
+# --- Subcommand: attach ---------------------------------------------------
+cmd_attach() {
+  local query=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) usage; exit 0 ;;
+      -*) die "unknown option: $1" ;;
+      *)
+        [[ -n "$query" ]] && die "too many positional arguments"
+        query="$1"; shift ;;
+    esac
+  done
+
+  resolve_repo
+
+  local list
+  list=$(git -C "$WT_REPO_ROOT" worktree list --porcelain | awk '
+    /^worktree / { wt = substr($0, 10); next }
+    /^branch / {
+      b = $2; sub("refs/heads/", "", b);
+      printf "%s\t%s\n", wt, b
+    }
+  ')
+  [[ -n "$list" ]] || die "no worktrees found"
+
+  local selection
+  if [[ -n "$query" ]]; then
+    selection=$(printf '%s\n' "$list" | awk -F'\t' -v b="$query" '$2 == b { print; exit }')
+    [[ -n "$selection" ]] || die "no worktree found for branch: $query"
+  else
+    command -v fzf >/dev/null 2>&1 || die "fzf required for interactive selection"
+    selection=$(printf '%s\n' "$list" | fzf --with-nth=2 --delimiter=$'\t' --prompt='worktree> ') || exit 0
+    [[ -n "$selection" ]] || exit 0
+  fi
+
+  WT_PATH=$(printf '%s' "$selection" | cut -f1)
+  WT_BRANCH=$(printf '%s' "$selection" | cut -f2)
+  SANITIZED="${WT_BRANCH//\//-}"
+  export WT_REPO_ROOT WT_PATH WT_BRANCH
+
+  log "attaching to worktree '$WT_BRANCH' at $WT_PATH"
+  load_rc
+  launch_tmux
+  log "done — worktree at $WT_PATH"
+}
+
+# --- Subcommand: create (default) -----------------------------------------
+cmd_create() {
+  local BRANCH="" BASE=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) usage; exit 0 ;;
+      --from) BASE="${2:-}"; shift 2 ;;
+      -*) die "unknown option: $1" ;;
+      *)
+        [[ -n "$BRANCH" ]] && die "too many positional arguments"
+        BRANCH="$1"; shift ;;
+    esac
+  done
+  [[ -n "$BRANCH" ]] || { usage; exit 1; }
+
+  resolve_repo
+
+  # Sanitize branch for a filesystem path: feat/foo -> feat-foo
+  SANITIZED="${BRANCH//\//-}"
+  WT_PATH="$WT_REPO_ROOT/.claude/worktrees/$SANITIZED"
+  WT_BRANCH="$BRANCH"
+  export WT_REPO_ROOT WT_SOURCE WT_PATH WT_BRANCH
+
+  branch_exists() {
+    git -C "$WT_REPO_ROOT" show-ref --verify --quiet "refs/heads/$1"
+  }
+
+  worktree_exists() {
+    git -C "$WT_REPO_ROOT" worktree list --porcelain \
+      | awk '/^worktree /{print $2}' \
+      | grep -Fxq "$WT_PATH"
+  }
+
+  if worktree_exists; then
+    log "worktree already exists at $WT_PATH — reusing"
+  else
+    mkdir -p "$(dirname "$WT_PATH")"
+    if branch_exists "$BRANCH"; then
+      log "checking out existing branch '$BRANCH' at $WT_PATH"
+      git -C "$WT_REPO_ROOT" worktree add "$WT_PATH" "$BRANCH"
+    else
+      local BASE_REF="${BASE:-HEAD}"
+      log "creating new branch '$BRANCH' from '$BASE_REF' at $WT_PATH"
+      git -C "$WT_REPO_ROOT" worktree add -b "$BRANCH" "$WT_PATH" "$BASE_REF"
+    fi
+  fi
+
+  load_rc
+
+  if [[ ${#WT_SYNC_PATHS[@]} -gt 0 ]]; then
+    log "syncing ${#WT_SYNC_PATHS[@]} path(s) into worktree"
+    for rel in "${WT_SYNC_PATHS[@]}"; do
+      local src="$WT_SOURCE/$rel"
+      if [[ ! -e "$src" ]]; then
+        log "  skip (missing): $rel"
+        continue
+      fi
+      log "  sync: $rel"
+      (cd "$WT_SOURCE" && rsync -a --relative "$rel" "$WT_PATH/")
+    done
+  fi
+
+  if declare -F wt_env_setup >/dev/null 2>&1; then
+    log "running wt_env_setup"
+    (cd "$WT_PATH" && wt_env_setup)
+  fi
+
+  launch_tmux
+  log "done — worktree at $WT_PATH"
+}
+
+# --- Dispatch -------------------------------------------------------------
+case "${1:-}" in
+  -h|--help) usage; exit 0 ;;
+  '') usage; exit 1 ;;
+  attach) shift; cmd_attach "$@" ;;
+  *) cmd_create "$@" ;;
+esac

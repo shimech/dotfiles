@@ -22,10 +22,17 @@ Globally gitignored via `.config/git/ignore`.
 ```sh
 wt <branch>                 # new branch from HEAD, or jump to existing worktree
 wt <branch> --from main     # new branch based on main
+wt attach                   # fzf over existing worktrees, run only the tmux hook
+wt attach <branch>          # direct-select an existing worktree by branch
 wt-switch                   # fzf over existing branches, then wt
 ```
 
 Idempotent: running `wt <branch>` a second time just reuses the existing worktree.
+
+`wt attach` is the lightweight form for jumping back into a worktree you
+already set up. It skips `WT_SYNC_PATHS` and `wt_env_setup` and only runs
+`wt_tmux_windows` (or the default single-window fallback), using the selected
+worktree's path as the cwd.
 
 ## Per-repo config: `.worktreerc`
 
