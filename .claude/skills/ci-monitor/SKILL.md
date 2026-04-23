@@ -58,9 +58,18 @@ CIステータスの出力にアノテーション（ファイル・行番号・
 
 ```bash
 git add <files>
-git commit -m "<type>(<scope>): <message>"
+git commit -m "$(cat <<'EOF'
+<type>(<scope>): <message>
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
 git push
 ```
+
+**コミットメッセージには必ず `Co-Authored-By: Claude <noreply@anthropic.com>`
+署名を含める**（Claude Code のグローバル方針。例外なし）。モデル名・版は
+Claude Code 本体の指示に合わせて差し替えて構わないが、署名そのものは省略しない。
 
 push後はステータス再取得に戻り、新しいCI runを監視する。
 
