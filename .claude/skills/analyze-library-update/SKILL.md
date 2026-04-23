@@ -122,7 +122,7 @@ description: Analyze the impact of library updates in a pull request
 
 | 項目 | 内容 |
 |------|------|
-| **PR** | [#[番号]](https://github.com/reiwa-travel/travel-ios/pull/[番号]) |
+| **PR** | [#[番号]](https://github.com/[owner]/[repo]/pull/[番号]) |
 | **バージョン** | `[旧バージョン]` → `[新バージョン]` |
 | **リスクレベル** | 🔴 高 / 🟡 中 / 🟢 低 |
 | **破壊的変更** | ✅ あり / ❌ なし |
@@ -142,7 +142,7 @@ description: Analyze the impact of library updates in a pull request
 
 | リンク種別 | URL |
 |-----------|-----|
-| **このPR** | [#[番号]](https://github.com/reiwa-travel/travel-ios/pull/[番号]) |
+| **このPR** | [#[番号]](https://github.com/[owner]/[repo]/pull/[番号]) |
 | **リリースノート** | [Release [新バージョン]]([リリースノートURL]) |
 | **Changelog** | [CHANGELOG.md]([ChangelogのURL]) ※存在する場合 |
 | **GitHub Releases** | [Releases]([GitHubのReleasesページURL]) |

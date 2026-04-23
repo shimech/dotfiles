@@ -1,3 +1,3 @@
 .PHONY: setup
 setup:
-	@./bin/setup.sh
+	@./scripts/setup.sh

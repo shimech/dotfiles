@@ -31,7 +31,6 @@ function mkcd() {
   fi
 }
 
-alias latest="./latest.sh"
 alias colima-start="colima start --cpu $(sysctl -n hw.ncpu) --memory $(($(sysctl -n hw.memsize) / 1024**3 / 2)) --disk 100 --arch aarch64 --mount-type virtiofs --dns 8.8.8.8 --dns 1.1.1.1"
 
 export PATH="$HOME/.local/bin:$PATH"

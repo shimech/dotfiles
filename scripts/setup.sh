@@ -68,11 +68,9 @@ done
 
 ## bin
 mkdir -p $HOME/.local/bin
-ln -sf $WORKDIR/bin/wt $HOME/.local/bin/wt
-
-## Other
-ln -sf $WORKDIR/latest.sh $HOME/latest.sh
-ln -sf $WORKDIR/k1y0mar0.sh $HOME/k1y0mar0.sh
+for f in $WORKDIR/bin/*; do
+  ln -sf $f $HOME/.local/bin/$(basename $f)
+done
 
 
 # Complete
