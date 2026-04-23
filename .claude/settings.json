@@ -7,7 +7,6 @@
       "WebFetch",
       "WebSearch",
       "Bash(/usr/bin/make:*)",
-      "Bash(bash ~/.claude/plugins/cache/newt-claude-code-plugins/**)",
       "Bash(cat:*)",
       "Bash(cd:*)",
       "Bash(cp:*)",
@@ -63,31 +62,13 @@
     ]
   },
   "enabledPlugins": {
-    "tmux-agent-sidebar@hiroppy": true,
-    "newt-pr-review-fix@newt-claude-code-plugins": true,
-    "newt-thinking@newt-claude-code-plugins": true,
-    "newt-app-analyze-library-update@newt-claude-code-plugins": true,
-    "newt-basic-git-operations@newt-claude-code-plugins": true,
-    "newt-best-practices@newt-claude-code-plugins": true,
-    "newt-code-review-on-local@newt-claude-code-plugins": true,
-    "newt-external-docs@newt-claude-code-plugins": true,
-    "newt-hello-world@newt-claude-code-plugins": true,
-    "newt-i18n@newt-claude-code-plugins": true,
-    "newt-make-qa-plan@newt-claude-code-plugins": true,
-    "newt-plan@newt-claude-code-plugins": true,
-    "newt-pr-monitor@newt-claude-code-plugins": true
+    "tmux-agent-sidebar@hiroppy": true
   },
   "extraKnownMarketplaces": {
     "hiroppy": {
       "source": {
         "source": "directory",
-        "path": "/Users/shuntaro/.tmux/plugins/tmux-agent-sidebar"
-      }
-    },
-    "newt-claude-code-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "reiwa-travel/newt-code-agent"
+        "path": "~/.tmux/plugins/tmux-agent-sidebar"
       }
     }
   },
