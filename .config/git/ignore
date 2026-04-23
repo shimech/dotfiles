@@ -3,3 +3,6 @@
 .local
 
 .claude/worktrees
+
+# wt
+.worktreerc

@@ -1,6 +1,6 @@
 ---
 name: wt
-description: Use when the user wants to create a git worktree, set up a `.claude/worktree.local.sh` for a repo, sync gitignored files (like `.env`) into a worktree, or launch tmux windows tied to a branch. Triggers on phrases like "make a worktree", "set up wt for this repo", "sync .env to the worktree", "add a tmux layout for my branch", "create worktree.local.sh".
+description: Use when the user wants to create a git worktree, set up a `.worktreerc` for a repo, sync gitignored files (like `.env`) into a worktree, or launch tmux windows tied to a branch. Triggers on phrases like "make a worktree", "set up wt for this repo", "sync .env to the worktree", "add a tmux layout for my branch", "create .worktreerc".
 ---
 
 # wt — per-branch worktree + env setup + tmux launcher
@@ -14,8 +14,8 @@ description: Use when the user wants to create a git worktree, set up a `.claude
 4. tmux window launch (current session if inside tmux, new session otherwise)
 
 The `wt` command itself is generic. All repo-specific policy lives in a single
-file per repo: `<repo-root>/.claude/worktree.local.sh`. That file is
-automatically gitignored via the global `*.local.*` pattern.
+file per repo: `<repo-root>/.worktreerc` (a shell script sourced by `wt`).
+Globally gitignored via `.config/git/ignore`.
 
 ## Invocation
 
@@ -27,10 +27,10 @@ wt-switch                   # fzf over existing branches, then wt
 
 Idempotent: running `wt <branch>` a second time just reuses the existing worktree.
 
-## Per-repo config: `.claude/worktree.local.sh`
+## Per-repo config: `.worktreerc`
 
-Three optional hooks. All are plain bash; the `wt` script sources this file
-after creating the worktree but before syncing / env setup / tmux.
+Three optional hooks. `.worktreerc` is a shell script (no extension); `wt`
+sources it after creating the worktree but before syncing / env setup / tmux.
 
 ```bash
 # Paths relative to the repo root to rsync into the new worktree.
@@ -85,12 +85,12 @@ If a hook isn't defined, `wt` falls back:
    - `requirements.txt` / `pyproject.toml` → ask the user, Python setup varies
 3. Ask the user what tmux layout they want (single window? multi-window like
    NeMS.yml does with editor + dashboard?).
-4. Write `<repo>/.claude/worktree.local.sh` with the three hooks.
-5. Remind the user the file is gitignored via `*.local.*` (so no commit needed).
+4. Write `<repo>/.worktreerc` with the three hooks.
+5. Remind the user the file is gitignored globally (so no commit needed).
 
 ### "Add more files to sync"
 
-Edit `WT_SYNC_PATHS` in `<repo>/.claude/worktree.local.sh`. Paths are relative
+Edit `WT_SYNC_PATHS` in `<repo>/.worktreerc`. Paths are relative
 to the repo root. Directories work too (rsync -a --relative preserves the
 tree). If the path doesn't exist at sync time, it's silently skipped.
 
@@ -130,7 +130,7 @@ wt_tmux_windows() {
 - `bin/wt` — the command itself
 - `bin/setup.sh` — installs the `~/.local/bin/wt` symlink
 - `.zshrc` — defines `wt-switch` (fzf → wt)
-- `.config/git/ignore` — already excludes `.claude/worktrees/` and `*.local.*`
+- `.config/git/ignore` — excludes `.claude/worktrees/`, `*.local.*`, and `.worktreerc`
 
 ## Non-goals
 

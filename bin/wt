@@ -6,8 +6,7 @@
 # sync gitignored files from the source checkout, run per-repo env setup,
 # and launch tmux window(s) for the worktree.
 #
-# Per-repo policy lives in <repo>/.claude/worktree.local.sh
-# (auto-ignored by the global "*.local.*" gitignore pattern).
+# Per-repo policy lives in <repo>/.worktreerc (shell script).
 # That file may define:
 #   WT_SYNC_PATHS=(...)   paths relative to repo root to rsync into the worktree
 #   wt_env_setup()        commands run with cwd = worktree
@@ -95,13 +94,13 @@ fi
 # --- Load per-repo config -------------------------------------------------
 WT_SYNC_PATHS=()
 
-WT_LOCAL_CONFIG="$WT_REPO_ROOT/.claude/worktree.local.sh"
-if [[ -f "$WT_LOCAL_CONFIG" ]]; then
-  log "loading $WT_LOCAL_CONFIG"
+WT_RC="$WT_REPO_ROOT/.worktreerc"
+if [[ -f "$WT_RC" ]]; then
+  log "loading $WT_RC"
   # shellcheck disable=SC1090
-  source "$WT_LOCAL_CONFIG"
+  source "$WT_RC"
 else
-  log "no .claude/worktree.local.sh — using defaults"
+  log "no .worktreerc — using defaults"
 fi
 
 # --- Sync gitignored files -----------------------------------------------
