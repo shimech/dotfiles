@@ -35,7 +35,53 @@
       "Bash(yes)",
       "mcp__*"
     ],
-    "deny": [],
+    "deny": [
+      "Read(/Users/shuntaro/.ssh/**)",
+      "Read(/Users/shuntaro/.aws/**)",
+      "Read(/Users/shuntaro/.gnupg/**)",
+      "Read(/Users/shuntaro/.config/gcloud/**)",
+      "Read(/Users/shuntaro/.kube/config)",
+      "Read(/Users/shuntaro/.netrc)",
+      "Read(/Users/shuntaro/Library/Keychains/**)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/id_rsa)",
+      "Read(**/id_ed25519)",
+      "Read(**/id_ecdsa)",
+      "Read(**/id_dsa)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/credentials.json)",
+      "Read(**/secrets.json)",
+      "Read(**/service-account*.json)",
+      "Write(/Users/shuntaro/.ssh/**)",
+      "Write(/Users/shuntaro/.aws/**)",
+      "Write(/Users/shuntaro/.gnupg/**)",
+      "Write(**/.env)",
+      "Write(**/.env.*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf $HOME)",
+      "Bash(rm -rf $HOME/*)",
+      "Bash(rm -fr /)",
+      "Bash(rm -fr /*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(halt:*)",
+      "Bash(poweroff:*)",
+      "Bash(diskutil:*)",
+      "Bash(launchctl:*)",
+      "Bash(chmod -R 777 /)",
+      "Bash(chmod -R 777 /*)",
+      "Bash(chown -R *)",
+      "Bash(eval:*)"
+    ],
     "ask": [
       "Bash(git commit:*)",
       "Bash(git merge:*)",
@@ -44,7 +90,8 @@
       "Bash(git push:*)",
       "Bash(python:*)",
       "Bash(python3:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(sudo:*)"
     ],
     "defaultMode": "plan"
   },
@@ -56,6 +103,17 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/notify.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/security-audit.sh"
           }
         ]
       }
