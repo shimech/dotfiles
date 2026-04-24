@@ -2,6 +2,7 @@
 #
 # wt <branch> [--from <base>]
 # wt attach [<branch>]
+# wt remote [<query>] [--fetch]
 #
 # Create or enter a git worktree at <repo>/.claude/worktrees/<branch>,
 # sync gitignored files from the source checkout, run per-repo env setup,
@@ -22,6 +23,7 @@ usage() {
   cat <<'EOF'
 Usage: wt <branch> [--from <base>]
        wt attach [<branch>]
+       wt remote [<query>] [--fetch]
 
 Arguments:
   <branch>           Branch name to create or enter a worktree for.
@@ -30,6 +32,9 @@ Arguments:
 Subcommands:
   attach [<branch>]  Select an existing worktree (fzf if no arg) and run
                      the tmux hook. Skips file sync and env setup.
+  remote [<query>]   Pick a remote-tracking branch with fzf and create a
+                     local branch that tracks it, then set up a worktree.
+                     --fetch runs `git fetch --all --prune` first.
 EOF
 }
 
@@ -199,6 +204,11 @@ cmd_create() {
     fi
   fi
 
+  finalize_worktree
+}
+
+# --- Shared: finalize (rc load, sync, env, tmux) --------------------------
+finalize_worktree() {
   load_rc
 
   if [[ ${#WT_SYNC_PATHS[@]} -gt 0 ]]; then
@@ -223,10 +233,68 @@ cmd_create() {
   log "done — worktree at $WT_PATH"
 }
 
+# --- Subcommand: remote ---------------------------------------------------
+cmd_remote() {
+  local query="" do_fetch=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) usage; exit 0 ;;
+      --fetch) do_fetch=1; shift ;;
+      -*) die "unknown option: $1" ;;
+      *)
+        [[ -n "$query" ]] && die "too many positional arguments"
+        query="$1"; shift ;;
+    esac
+  done
+
+  command -v fzf >/dev/null 2>&1 || die "fzf required for interactive selection"
+
+  resolve_repo
+
+  if [[ $do_fetch -eq 1 ]]; then
+    log "fetching all remotes"
+    git -C "$WT_REPO_ROOT" fetch --all --prune
+  fi
+
+  local list
+  list=$(git -C "$WT_REPO_ROOT" for-each-ref --format='%(refname:short)' refs/remotes \
+    | grep -v '/HEAD$' || true)
+  [[ -n "$list" ]] || die "no remote-tracking branches found (try --fetch)"
+
+  local selection
+  selection=$(printf '%s\n' "$list" | fzf --query="$query" --prompt='remote> ') || exit 0
+  [[ -n "$selection" ]] || exit 0
+
+  # selection like "origin/feat/foo" → strip the first segment (remote name).
+  local BRANCH="${selection#*/}"
+  [[ -n "$BRANCH" && "$BRANCH" != "$selection" ]] || die "unexpected ref: $selection"
+
+  SANITIZED="${BRANCH//\//-}"
+  WT_PATH="$WT_REPO_ROOT/.claude/worktrees/$SANITIZED"
+  WT_BRANCH="$BRANCH"
+  export WT_REPO_ROOT WT_SOURCE WT_PATH WT_BRANCH
+
+  if git -C "$WT_REPO_ROOT" worktree list --porcelain \
+      | awk '/^worktree /{print $2}' | grep -Fxq "$WT_PATH"; then
+    log "worktree already exists at $WT_PATH — reusing"
+  elif git -C "$WT_REPO_ROOT" show-ref --verify --quiet "refs/heads/$BRANCH"; then
+    log "local branch '$BRANCH' already exists — checking out at $WT_PATH"
+    mkdir -p "$(dirname "$WT_PATH")"
+    git -C "$WT_REPO_ROOT" worktree add "$WT_PATH" "$BRANCH"
+  else
+    log "creating worktree tracking '$selection' at $WT_PATH"
+    mkdir -p "$(dirname "$WT_PATH")"
+    git -C "$WT_REPO_ROOT" worktree add --track -b "$BRANCH" "$WT_PATH" "$selection"
+  fi
+
+  finalize_worktree
+}
+
 # --- Dispatch -------------------------------------------------------------
 case "${1:-}" in
   -h|--help) usage; exit 0 ;;
   '') usage; exit 1 ;;
   attach) shift; cmd_attach "$@" ;;
+  remote) shift; cmd_remote "$@" ;;
   *) cmd_create "$@" ;;
 esac

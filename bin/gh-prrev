@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+#
+# gh-prrev [--reviewed|-r] [--all|-a] [--limit|-L N] [--no-color] [-- <extra gh args>...]
+#
+# List open pull requests on GitHub where you are a reviewer.
+# Default: PRs currently awaiting your review (review-requested:@me).
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: gh-prrev [--reviewed|-r] [--all|-a] [--limit|-L N] [--no-color] [-- <extra gh args>...]
+
+Flags:
+  (none)          Open PRs where review is requested from you (default).
+  --reviewed, -r  Open PRs you have already reviewed.
+  --all, -a       Both requested and reviewed (union, deduplicated).
+  --limit, -L N   Max results per query (default 30, max 100).
+  --no-color      Disable ANSI colors / box-drawing separators.
+  -h, --help      Show this help.
+
+Default output columns: REPO#PR  BRANCH  AUTHOR  TITLE.
+Arguments after `--` bypass the default formatter and are forwarded to
+`gh search prs` (no branch column — the search API does not expose it).
+EOF
+}
+
+die() {
+  printf 'gh-prrev: %s\n' "$*" >&2
+  exit 1
+}
+
+MODE="requested"
+LIMIT=30
+COLOR="auto"
+EXTRA=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help) usage; exit 0 ;;
+    -r|--reviewed) MODE="reviewed"; shift ;;
+    -a|--all) MODE="all"; shift ;;
+    -L|--limit) [[ $# -ge 2 ]] || die "--limit needs a value"; LIMIT="$2"; shift 2 ;;
+    --no-color) COLOR="never"; shift ;;
+    --) shift; EXTRA=("$@"); break ;;
+    -*) die "unknown option: $1" ;;
+    *) die "unexpected argument: $1" ;;
+  esac
+done
+
+command -v gh >/dev/null 2>&1 || die "gh CLI not found (brew install gh)"
+
+# Escape hatch: if caller passed `-- …`, defer entirely to `gh search prs`.
+if [[ ${#EXTRA[@]} -gt 0 ]]; then
+  case "$MODE" in
+    requested) exec gh search prs --state=open --review-requested=@me "${EXTRA[@]}" ;;
+    reviewed)  exec gh search prs --state=open --reviewed-by=@me    "${EXTRA[@]}" ;;
+    all)
+      {
+        gh search prs --state=open --review-requested=@me "${EXTRA[@]}"
+        gh search prs --state=open --reviewed-by=@me    "${EXTRA[@]}"
+      } | awk -F'\t' '!seen[$1 "#" $2]++'
+      exit
+      ;;
+  esac
+fi
+
+GQL='
+query($q: String!, $n: Int!) {
+  search(query: $q, type: ISSUE, first: $n) {
+    nodes {
+      ... on PullRequest {
+        number
+        title
+        headRefName
+        author { login }
+        repository { nameWithOwner }
+      }
+    }
+  }
+}'
+
+JQ='.data.search.nodes[]
+    | select(.number)
+    | [ .repository.nameWithOwner + "#" + (.number|tostring),
+        .headRefName,
+        (.author.login // ""),
+        .title ]
+    | @tsv'
+
+gql_search() {
+  gh api graphql -F n="$LIMIT" -f q="$1" -f query="$GQL" --jq "$JQ"
+}
+
+Q_REQUESTED='is:pr is:open archived:false review-requested:@me'
+Q_REVIEWED='is:pr is:open archived:false reviewed-by:@me'
+
+if [[ "$COLOR" == "auto" && -t 1 ]] || [[ "$COLOR" == "always" ]]; then
+  C_BOLD=$'\033[1m'
+  C_DIM=$'\033[2m'
+  C_RESET=$'\033[0m'
+  C_CYAN=$'\033[36m'
+  C_GREEN=$'\033[32m'
+  C_MAG=$'\033[35m'
+  C_YEL=$'\033[33m'
+  SEP_CHAR='─'
+else
+  C_BOLD='' C_DIM='' C_RESET='' C_CYAN='' C_GREEN='' C_MAG='' C_YEL=''
+  SEP_CHAR='-'
+fi
+
+render() {
+  local title
+  case "$MODE" in
+    requested) title="Review requested" ;;
+    reviewed)  title="Already reviewed" ;;
+    all)       title="Requested + reviewed" ;;
+  esac
+
+  awk -F '\t' \
+      -v BOLD="$C_BOLD" -v DIM="$C_DIM" -v RESET="$C_RESET" \
+      -v CYAN="$C_CYAN" -v GREEN="$C_GREEN" -v MAG="$C_MAG" -v YEL="$C_YEL" \
+      -v SEP="$SEP_CHAR" -v TITLE="$title" '
+    BEGIN {
+      h[1] = "REPO#PR"; h[2] = "BRANCH"; h[3] = "AUTHOR"; h[4] = "TITLE"
+      for (i=1;i<=4;i++) w[i] = length(h[i])
+    }
+    {
+      rows[NR] = $0
+      for (i=1;i<=4;i++) if (length($i) > w[i]) w[i] = length($i)
+    }
+    END {
+      total = w[1] + w[2] + w[3] + w[4] + 6
+      bar = ""
+      for (i=0;i<total;i++) bar = bar SEP
+
+      printf "%s%s  %s(%d)%s\n", BOLD, TITLE, DIM, NR, RESET
+
+      if (NR == 0) {
+        printf "%s  (no matching PRs)%s\n", DIM, RESET
+        exit
+      }
+
+      printf "%s", BOLD
+      for (i=1;i<=4;i++) printf "%-*s%s", w[i], h[i], (i<4 ? "  " : "")
+      printf "%s\n", RESET
+
+      printf "%s%s%s\n", DIM, bar, RESET
+
+      for (r=1; r<=NR; r++) {
+        split(rows[r], f, "\t")
+        split(f[1], rp, "#")
+        repo_pr = sprintf("%s%s%s%s#%s%s", CYAN, rp[1], RESET, YEL, rp[2], RESET)
+        pad1 = w[1] - length(f[1])
+        pad_spaces = ""
+        for (i=0;i<pad1;i++) pad_spaces = pad_spaces " "
+
+        printf "%s%s  %s%-*s%s  %s%-*s%s  %s\n", \
+          repo_pr, pad_spaces, \
+          GREEN, w[2], f[2], RESET, \
+          MAG,   w[3], f[3], RESET, \
+          f[4]
+      }
+    }
+  '
+}
+
+case "$MODE" in
+  requested) gql_search "$Q_REQUESTED" | render ;;
+  reviewed)  gql_search "$Q_REVIEWED"  | render ;;
+  all)
+    {
+      gql_search "$Q_REQUESTED"
+      gql_search "$Q_REVIEWED"
+    } | awk -F'\t' '!seen[$1]++' | render
+    ;;
+esac
