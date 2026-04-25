@@ -30,6 +30,7 @@
       "Bash(tmux:*)",
       "Bash(tree:*)",
       "Bash(which:*)",
+      "Bash(wt:*)",
       "Bash(vercel:*)",
       "Bash(yarn:*)",
       "Bash(yes)",
@@ -137,5 +138,8 @@
     "mode": "hold"
   },
   "showThinkingSummaries": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "theme": "dark-daltonized",
+  "autoCompactEnabled": false,
+  "remoteControlAtStartup": true
 }
