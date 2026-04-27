@@ -45,7 +45,7 @@
       "Read(~/.netrc)",
       "Read(~/Library/Keychains/**)",
       "Read(**/.env)",
-      "Read(**/.env.*)",
+      "Read(**/.env.!(local))",
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Read(**/id_rsa)",

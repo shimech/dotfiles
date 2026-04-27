@@ -24,6 +24,8 @@ wt <branch>                 # new branch from HEAD, or jump to existing worktree
 wt <branch> --from main     # new branch based on main
 wt attach                   # fzf over existing worktrees, run only the tmux hook
 wt attach <branch>          # direct-select an existing worktree by branch
+wt cleanup                  # fzf over existing worktrees and remove the chosen one
+wt cleanup <branch>         # remove the worktree for <branch>
 wt-switch                   # fzf over existing branches, then wt
 ```
 
@@ -104,13 +106,20 @@ tree). If the path doesn't exist at sync time, it's silently skipped.
 ### "Worktree already exists error"
 
 `wt` reuses existing worktrees by design. If you hit a real conflict
-(stale worktree, dangling lock), clean up manually:
+(stale worktree, dangling lock), use `wt cleanup` (fzf-select) or clean
+up manually:
 
 ```sh
+wt cleanup                                         # fzf → remove a worktree
+wt cleanup <branch>                                # remove by branch name
 git worktree list                                  # see what's registered
 git worktree remove <repo>/.claude/worktrees/<x>   # remove a worktree
 git worktree prune                                 # drop stale references
 ```
+
+`wt cleanup` only removes the worktree directory and prunes stale refs;
+the branch itself is left in place. Use `git branch -d <branch>` if you
+also want to delete the branch.
 
 ### "I want tmuxinator-style multi-window output"
 

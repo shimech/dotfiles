@@ -3,6 +3,7 @@
 # wt <branch> [--from <base>]
 # wt attach [<branch>]
 # wt remote [<query>] [--fetch]
+# wt cleanup [<branch>]
 #
 # Create or enter a git worktree at <repo>/.claude/worktrees/<branch>,
 # sync gitignored files from the source checkout, run per-repo env setup,
@@ -10,6 +11,9 @@
 #
 # `wt attach` selects an existing worktree (fzf if no arg) and only runs
 # the tmux hook — no sync, no env setup.
+#
+# `wt cleanup` removes an existing worktree (fzf if no arg). The primary
+# working tree is excluded from the list.
 #
 # Per-repo policy lives in <repo>/.worktreerc (shell script).
 # That file may define:
@@ -24,6 +28,7 @@ usage() {
 Usage: wt <branch> [--from <base>]
        wt attach [<branch>]
        wt remote [<query>] [--fetch]
+       wt cleanup [<branch>]
 
 Arguments:
   <branch>           Branch name to create or enter a worktree for.
@@ -35,6 +40,9 @@ Subcommands:
   remote [<query>]   Pick a remote-tracking branch with fzf and create a
                      local branch that tracks it, then set up a worktree.
                      --fetch runs `git fetch --all --prune` first.
+  cleanup [<branch>] Remove an existing worktree (fzf if no arg). The
+                     primary working tree is excluded. The branch itself
+                     is left intact.
 EOF
 }
 
@@ -290,11 +298,58 @@ cmd_remote() {
   finalize_worktree
 }
 
+# --- Subcommand: cleanup --------------------------------------------------
+cmd_cleanup() {
+  local query=""
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -h|--help) usage; exit 0 ;;
+      -*) die "unknown option: $1" ;;
+      *)
+        [[ -n "$query" ]] && die "too many positional arguments"
+        query="$1"; shift ;;
+    esac
+  done
+
+  resolve_repo
+
+  local list
+  list=$(git -C "$WT_REPO_ROOT" worktree list --porcelain | awk -v primary="$WT_REPO_ROOT" '
+    /^worktree / { wt = substr($0, 10); next }
+    /^branch / {
+      if (wt == primary) next
+      b = $2; sub("refs/heads/", "", b);
+      printf "%s\t%s\n", wt, b
+    }
+  ')
+  [[ -n "$list" ]] || die "no removable worktrees found"
+
+  local selection
+  if [[ -n "$query" ]]; then
+    selection=$(printf '%s\n' "$list" | awk -F'\t' -v b="$query" '$2 == b { print; exit }')
+    [[ -n "$selection" ]] || die "no worktree found for branch: $query"
+  else
+    command -v fzf >/dev/null 2>&1 || die "fzf required for interactive selection"
+    selection=$(printf '%s\n' "$list" | fzf --with-nth=2 --delimiter=$'\t' --prompt='cleanup> ') || exit 0
+    [[ -n "$selection" ]] || exit 0
+  fi
+
+  local target_path target_branch
+  target_path=$(printf '%s' "$selection" | cut -f1)
+  target_branch=$(printf '%s' "$selection" | cut -f2)
+
+  log "removing worktree '$target_branch' at $target_path"
+  git -C "$WT_REPO_ROOT" worktree remove "$target_path"
+  git -C "$WT_REPO_ROOT" worktree prune
+  log "done"
+}
+
 # --- Dispatch -------------------------------------------------------------
 case "${1:-}" in
   -h|--help) usage; exit 0 ;;
   '') usage; exit 1 ;;
   attach) shift; cmd_attach "$@" ;;
   remote) shift; cmd_remote "$@" ;;
+  cleanup) shift; cmd_cleanup "$@" ;;
   *) cmd_create "$@" ;;
 esac
