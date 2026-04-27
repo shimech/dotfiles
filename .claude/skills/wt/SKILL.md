@@ -38,8 +38,10 @@ worktree's path as the cwd.
 
 ## Per-repo config: `.worktreerc`
 
-Three optional hooks. `.worktreerc` is a shell script (no extension); `wt`
+Four optional hooks. `.worktreerc` is a shell script (no extension); `wt`
 sources it after creating the worktree but before syncing / env setup / tmux.
+For `wt cleanup`, it is sourced after the worktree is removed, then `wt_cleanup`
+is invoked.
 
 ```bash
 # Paths relative to the repo root to rsync into the new worktree.
@@ -70,12 +72,26 @@ wt_tmux_windows() {
   tmux new-window -n "[api][dash] $WT_BRANCH" -c "$WT_PATH"
   tmux send-keys "colima-start && pnpm run docker:db" C-m
 }
+
+# Runs AFTER `wt cleanup` removes the worktree (no cwd guarantee).
+# Use this to drop branch-scoped resources that wt_env_setup created
+# (databases, caches, etc.) and to delete the local branch if desired.
+# Same env vars as wt_tmux_windows: $WT_PATH / $WT_BRANCH / $WT_REPO_ROOT.
+# Note: $WT_PATH points to the now-removed directory — don't `cd` there.
+wt_cleanup() {
+  # e.g. drop a branch-scoped test DB
+  docker exec -i mydb mysql -u root -e "DROP DATABASE IF EXISTS testing_${WT_BRANCH//\//_};"
+
+  # delete the local branch (worktree is already gone, so -D is safe)
+  git -C "$WT_REPO_ROOT" branch -D "$WT_BRANCH" 2>/dev/null || true
+}
 ```
 
 If a hook isn't defined, `wt` falls back:
 - No `WT_SYNC_PATHS` → nothing is synced
 - No `wt_env_setup` → no setup step
 - No `wt_tmux_windows` → one window named `[<repo>] <branch>` at `$WT_PATH`
+- No `wt_cleanup` → only `git worktree remove` + `git worktree prune` run
 
 ## Common tasks
 
@@ -94,8 +110,10 @@ If a hook isn't defined, `wt` falls back:
    - `requirements.txt` / `pyproject.toml` → ask the user, Python setup varies
 3. Ask the user what tmux layout they want (single window? multi-window like
    NeMS.yml does with editor + dashboard?).
-4. Write `<repo>/.worktreerc` with the three hooks.
-5. Remind the user the file is gitignored globally (so no commit needed).
+4. Ask whether `wt cleanup` should also drop branch-scoped resources
+   (test DBs, caches) and/or delete the local branch — those go in `wt_cleanup`.
+5. Write `<repo>/.worktreerc` with the relevant hooks.
+6. Remind the user the file is gitignored globally (so no commit needed).
 
 ### "Add more files to sync"
 
@@ -117,9 +135,10 @@ git worktree remove <repo>/.claude/worktrees/<x>   # remove a worktree
 git worktree prune                                 # drop stale references
 ```
 
-`wt cleanup` only removes the worktree directory and prunes stale refs;
-the branch itself is left in place. Use `git branch -d <branch>` if you
-also want to delete the branch.
+`wt cleanup` removes the worktree directory and prunes stale refs, then
+runs the repo's `wt_cleanup` hook if defined. By default the branch itself
+is left in place — define `wt_cleanup` (or run `git branch -d <branch>`
+manually) to also delete it.
 
 ### "I want tmuxinator-style multi-window output"
 

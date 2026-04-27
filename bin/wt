@@ -20,6 +20,8 @@
 #   WT_SYNC_PATHS=(...)   paths relative to repo root to rsync into the worktree
 #   wt_env_setup()        commands run with cwd = worktree
 #   wt_tmux_windows()     tmux commands creating windows; $WT_PATH / $WT_BRANCH available
+#   wt_cleanup()          commands run AFTER `wt cleanup` removes the worktree;
+#                         $WT_REPO_ROOT / $WT_PATH / $WT_BRANCH available
 
 set -euo pipefail
 
@@ -341,6 +343,17 @@ cmd_cleanup() {
   log "removing worktree '$target_branch' at $target_path"
   git -C "$WT_REPO_ROOT" worktree remove "$target_path"
   git -C "$WT_REPO_ROOT" worktree prune
+
+  WT_PATH="$target_path"
+  WT_BRANCH="$target_branch"
+  export WT_REPO_ROOT WT_PATH WT_BRANCH
+
+  load_rc
+  if declare -F wt_cleanup >/dev/null 2>&1; then
+    log "running wt_cleanup"
+    wt_cleanup || log "wt_cleanup returned non-zero (ignored)"
+  fi
+
   log "done"
 }
 
