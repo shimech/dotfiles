@@ -23,6 +23,7 @@ return {
     config = function(_, opts)
       vim.api.nvim_set_hl(0, "NeoTreeFloatName", { fg = "#c7c9d1", bg = "#161821" })
       vim.api.nvim_set_hl(0, "NeoTreeFloatNameBorder", { fg = "#6b7089", bg = "#161821" })
+      vim.api.nvim_set_hl(0, "NeoTreeGitIgnored", { fg = "#8b8ea8" })
       require("neo-tree").setup(opts)
 
       -- neo-treeのgit statusをリアルタイムでリフレッシュする
