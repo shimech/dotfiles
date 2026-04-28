@@ -24,7 +24,7 @@ return {
     vim.api.nvim_set_hl(0, "LazyButton", { bg = "#161821" })
     vim.api.nvim_set_hl(0, "LazyButtonActive", { bg = "#1e2132" })
     vim.api.nvim_set_hl(0, "Visual", { fg = "#161821", bg = "#89b8c2" })
-    vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { fg = "#8b8ea8", italic = true })
+    vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { fg = "#6b7089", italic = true })
     vim.api.nvim_set_hl(0, "Comment", { fg = "#8b8ea8", italic = true })
     vim.api.nvim_set_hl(0, "@comment", { fg = "#8b8ea8", italic = true })
   end,
