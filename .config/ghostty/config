@@ -16,4 +16,5 @@ theme = Nordfox
 keybind = super+d=unbind
 keybind = super+shift+d=unbind
 keybind = super+t=unbind
+keybind = super+enter=unbind
 keybind = ctrl+alt+enter=toggle_maximize
